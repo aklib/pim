@@ -1,0 +1,77 @@
+<?php
+
+    /**
+     *
+     * custom.phtml
+     *
+     * @since 14.06.2017
+     * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+     */
+    // available variables:
+    use Laminas\Form\FieldsetInterface;
+
+    $headline = empty($this->title) ? '' : $this->translate($this->title);
+    $notice = empty($this->notice) ? '' : $this->translate($this->notice);
+    $subheadline = empty($this->subtitle) ? '' : $this->translate($this->subtitle);
+    $messages = empty($this->messages) ? [] : (array)$this->messages;
+    $form = $this->form ?? null;
+
+    if ($form) {
+        echo $this->form()->openTag($form);
+    }
+?>
+    <!-- Modal content -->
+
+
+    <div class="modal-header"<?php echo devhelp(__FILE__); ?>>
+        <h5 class="modal-title">
+            <?php
+                if (!empty($this->title)) {
+                    echo $this->translate($this->title);
+                }
+                if (!empty($this->subtitle)) {
+                    echo '<small class="ml-1">' . $this->translate($this->subtitle) . '</small>';
+                }
+            ?>
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <i aria-hidden="true" class="icon-xl la la-close"></i>
+        </button>
+    </div>
+    <div class="modal-body"<?php echo devhelp(__FILE__); ?>>
+        <?php
+            $messages = (array)$this->messages;
+            foreach ($messages as $message):?>
+                <p><?php echo $this->escapeHtml($message) ?></p>
+            <?php endforeach;
+            if (!empty($this->notice)):?>
+                <small class="help-block"><?php echo $this->escapeHtml($this->notice) ?></small>
+            <?php endif;
+            if ($form) {
+                foreach ($form as $element) {
+                    if ($element instanceof FieldsetInterface) {
+                        echo $this->formCollection($element, false);
+                    } else {
+                        echo $this->formRow($element);
+                    }
+                }
+            }
+            echo $this->content;
+        ?>
+    </div>
+    <div class="modal-footer"<?php echo devhelp(__FILE__); ?>>
+        <button type="button" class="btn btn-light-primary" data-dismiss="modal"><?= $this->translate('Close') ?></button>
+        <?php if ($form):
+            $label = $this->translate(empty($this->buttonOK) ? 'Submit2' : $this->buttonOK);
+            ?>
+            <button type="submit" class="btn btn-primary" name="submit" value="back"><?= $label ?></button>
+        <?php endif; ?>
+    </div>
+<?php
+    if ($form) {
+        echo $this->form()->closeTag($form);
+    }
+
+
+
+

@@ -1,0 +1,26 @@
+<?php
+/**
+ * 'default/admin'*
+ * user-list.phtml
+ *
+ * @since 16.05.2017
+ * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+ */
+$controller = $this->params('controller');
+$action = $this->params('action');
+
+$url = $this->history()->getLastUrlFor('list', $controller, 'user');
+
+if (empty($url)) {
+    $id = $this->params('id');
+    $url = $this->url('default/admin', ['controller' => $controller, 'action' => 'list']);
+}
+echo $this->partial('default/button/back.phtml', ['url' => $url]);
+?>
+
+<button type="submit" class="btn btn-default" name="submit" value="save"<?php echo devhelp(__FILE__) ?>>
+    <i class="la la-save"></i>&nbsp;<?php echo $this->translate('Save') ?>
+</button>
+<button class="btn btn-success" type="submit" name="submit" value="back"<?php echo devhelp(__FILE__); ?>>
+    <i class="la la-save"></i>&nbsp;<?php echo $this->translate('Save and back to list') ?>
+</button>

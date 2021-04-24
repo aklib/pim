@@ -1,0 +1,56 @@
+<?php
+    /**
+     * File button-block.phtml
+     *
+     * since: 04.08.2020
+     * author: alexej@kisselev.de
+     */
+
+    use Laminas\Navigation\Page\Mvc;
+
+    if (empty($this->scope)) {
+        return;
+    }
+
+    /** @var Mvc $scopedPage */
+    $scopedPage = null;
+    /** @var Mvc $page */
+    foreach ($this->container as $page) {
+        if ($page->get('scope') === $this->scope) {
+            $scopedPage = $page;
+            break;
+        }
+    }
+    if ($scopedPage === null) {
+        return;
+    }
+    $route = $scopedPage->getRoute();
+    if ($route === null) {
+        return;
+    }
+    $defaultController = $scopedPage->getController();
+    $defaultAction = $scopedPage->getAction();
+
+
+    $pages = $scopedPage->getPages();
+    /** @var Mvc $page */
+    foreach ($pages as $page):
+        $class = $page->isVisible() ? '' : ' disabled';
+        $options = [];
+        $options['controller'] = $page->getController() ?? $defaultController;
+        $options['action'] = $page->getAction() ?? $defaultAction;
+        $url = $this->url($route, $options);
+        ?>
+        <!--begin::button-->
+        <a class="btn btn-light btn-block<?= $class ?>" href="<?= $url ?>"<?php echo devhelp(__FILE__) ?>>
+            <?php if ($page->get('icon') !== null): ?>
+               <!-- <span class="symbol symbol-20 mr-3">
+                     <i class="menu-icon <?php /*echo $page->get('icon'); */?>"></i>
+                </span>-->
+            <?php endif; ?>
+            <?= $this->translate($page->getLabel()) ?>
+        </a>
+        <!--end::Item-->
+    <?php endforeach; ?>
+
+<!--end::User-->

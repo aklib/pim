@@ -1,0 +1,20 @@
+<?php
+
+/**
+ *
+ * reload.phtml
+ *
+ * @since 18.06.2017
+ * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+ */
+echo 'Reloading... Please wait'
+?>
+<script>
+    <?php if ($this->isAjax()):?>
+//            var $element = ($('#ajax-modal').length) ? $('#ajax-modal').find('.modal-content,.modal-body') : $('body');
+//            App.blockUI({target: $element});
+        <?php else: ?>
+//            App.blockUI();
+    <?php endif; ?>
+    window.location.reload();
+</script>

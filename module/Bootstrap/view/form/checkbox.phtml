@@ -1,0 +1,34 @@
+<?php
+/**
+ *
+ * checkbox.phtml
+ *
+ * @since 26.05.2017
+ * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+ */
+$labelAttr = $element->getOption('label_attributes');
+$addClass = $element->getAttribute('class');
+if($addClass === null){
+    $addClass = '';
+}
+else {
+    $addClass = trim(str_replace('form-control','',$addClass));
+}
+    /** @noinspection NotOptimalIfConditionsInspection */
+    if($element->getAttribute('disabled') === true || $element->getAttribute('disabled') === 'disabled'){
+    $addClass .= ' checkbox-disabled';
+}
+//
+//$extended = $element->getOption('extended');
+//$class = $extended['wrap']['class'];
+//if (empty($class)) {
+//    $class = 'col-md-4';
+//}
+?>
+
+<label class="checkbox"<?php echo devhelp(__FILE__); ?>>
+    <?= $this->html ?>
+    <span></span><?= !empty($labelAttr['append']) ? $labelAttr['append'] : '' ?>
+</label>
+
+

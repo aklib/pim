@@ -1,0 +1,77 @@
+<?php
+/**
+ *
+ * api-app-col.phtml
+ *
+ * @since 10.05.2017
+ * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+ */
+/* @var $row \Application\Entity\ApiOffer */
+$row = $this->row;
+$iconUrl = $this->decorate($row, 'getIconUrl');
+
+if (empty($iconUrl)) {
+    $iconUrl = '/img/no-image-icon.jpg';
+}
+
+$previewlink = $this->decorate($row, 'getPreviewlink');
+$hasPreviewlink = true;
+if (empty($previewlink)) {
+    $hasPreviewlink = false;
+}
+?>
+<div class="media"<?php echo devhelp(__FILE__); ?>>
+    <div class="media-left">
+        <a href="<?php echo $hasPreviewlink ? $previewlink : '';?>"<?php echo $hasPreviewlink ? '' : ' onclick="return false"';?> target="_blank">
+            <img class="media-object" style="max-width: 50px" src="<?php echo $iconUrl;?>" alt="...">
+        </a>
+    </div>
+    <div class="media-body">
+        <h6 class="media-heading">
+            <?php
+            echo $this->col;
+            if ($this->acl()->getUserRole()->getId() < 4) {
+                $customAppName = $row->getCustomAppName();
+                if (!empty($customAppName)) {
+                    $originalAppName = $row->getAppName();
+                    echo "<br><br><span style=\"color:#337ab7\">[$originalAppName]</span>";
+                }
+            }
+            ?>
+        </h6>
+        <small><?php echo $row->getProviderName();?></small>
+        <?php 
+        $hideCap = (bool)$this->hideCap;
+        if (!$hideCap && $row->getCompany()->isHaveCapacities() && !$this->acl()->isPublisher()) {?>
+            <br>
+            <?php
+            $capacities = $row->getCapacities();
+            /** @noinspection PhpUnhandledExceptionInspection */
+            $oneHour = new DateInterval('PT1H');
+            $from = new \DateTime('- 1 day');
+            /* @var $key \DateTime */
+            $key = $from->format('YmdH');
+            $now = new \DateTime();
+            $hours = [];
+            while($now > $from) {
+                $from->add($oneHour);
+                $key = $from->format('YmdH');
+                $hours[$key] = 0;
+            }
+            $capArray = [];
+            foreach($capacities as $cap) {
+                /* @var $key \DateTime */
+                $time = $cap->getTimeKey();
+                if (!is_null($time)) {
+                    if ($hours[$time->format('YmdH')] === 0) {
+                        $hours[$time->format('YmdH')] = $cap->getCapacity();
+                    }
+                }
+            }
+            ksort($hours);
+            ?>
+            <!--<span class=""><?echo implode(',', $hours);?></span>-->
+            <span class="bar_cap"><?echo implode(',', $hours);?></span>
+        <?php }?>
+    </div>
+</div>

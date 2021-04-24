@@ -1,0 +1,28 @@
+<?php
+/**
+ * File header.phtml
+ *
+ * since: 11.01.2021
+ * author: alexej@kisselev.de
+ */
+
+$path = APPLICATION_PATH . '/public/img/option.png';
+$data = file_get_contents($path);
+$base64 = 'data:image/png;base64,' . base64_encode($data);
+$img = '<img moz-do-not-send="false" src="' . $base64 . '" alt="-" style="line-height: 24px; vertical-align: middle;">';
+
+$urlHome = $this->url(
+    'default',
+    [],
+    [
+        'force_canonical' => true,
+    ]
+);
+
+?>
+
+<a class="blue" href="<?= $urlHome ?>" style="color: #3699ff;text-decoration: none;line-height: 24px; vertical-align: middle;font-size: 13px;">
+    ROI<?= $img ?>PUSH
+</a>
+
+

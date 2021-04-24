@@ -1,0 +1,96 @@
+<?php
+/**
+ * File table.phtml
+ *
+ * since: 31.01.2021
+ * author: alexej@kisselev.de
+ */
+
+use Elastic\View\Helper\TableBuilder;
+use Elastica\Exception\InvalidException;
+use Elastica\ResultSet;
+
+$tableColumn = $this->column;
+
+if (empty($tableColumn)) {
+    return;
+}
+
+/** @var ResultSet $resultSet */
+
+$resultSet = $this->data;
+if (!$resultSet instanceof ResultSet) {
+    return;
+}
+
+$agg = null;
+try {
+    $agg = $resultSet->getAggregation($tableColumn['name']);
+} catch (InvalidException $exception) {
+    if (!$resultSet->getResponse()->isOk()) {
+        echo 'no aggregation named ' . $tableColumn['name'];
+    }
+    return;
+}
+
+$containerId = $tableColumn['name'] . '_container';
+
+/** @var TableBuilder $builder */
+$builder = $this->tableBuilder($tableColumn)->createTable($agg, $tableColumn['name']);
+
+$table = $builder->getTable();
+$columns = $table['columns'] ?? [];
+
+$wrapClass = empty($tableColumn['class']) ? 'col-lg-12' : $tableColumn['class'];
+?>
+<div class="<?= $wrapClass ?> px-6 py-2 bg-white rounded"<?php echo devhelp(__FILE__); ?>>
+    <div id="<?= $containerId ?>" class="col" <?php echo devhelp(__FILE__); ?>>
+        <?php if (!empty($table['title']['text'])): ?>
+            <h4 class="text-center"><?= $this->translate($table['title']['text']) ?></h4>
+        <?php endif; ?>
+        <?php if (!empty($table['title']['text'])): ?>
+            <p class="text-center font-size-sm"><?= $this->translate($table['subtitle']['text']) ?></p>
+        <?php endif; ?>
+    </div>
+    <div class="table table-responsive table-hover">
+        <?php
+        if (!empty($columns)):
+            ?>
+            <table class="table table-head-custom dataTable font-size-sm"<?php echo devhelp(__FILE__) ?>>
+                <tr class="table-primary">
+                    <?php foreach ($columns as $column): ?>
+                        <th id="column_<?= $column['name'] ?>" data-colname="<?php echo $column['name']; ?>" class="sorting_disabled font-weight-bold font-size-sm" scope="col">
+                            <?php echo(!empty($column['label']) ? $this->translate($column['label']) : '') ?>
+                        </th>
+                    <?php endforeach; ?>
+                </tr>
+                <?php
+                if (!empty($table['data'])):
+                    foreach ($table['data'] as $row):
+                        echo '<tr>';
+                        foreach (array_keys($columns) as $colName):?>
+                            <td>
+                                <?php
+                                if(!empty($column['class'])){
+                                    echo '<span class="'.$column['class'].'">';
+                                }
+                                echo $row[$colName] ?? '';
+                                if(!empty($column['class'])){
+                                    echo '</span>';
+                                }
+                                ?>
+                            </td>
+                        <?php endforeach;
+                        echo '</tr>';
+                        ?>
+
+                    <?php endforeach;endif; ?>
+            </table>
+        <?php
+        else:?>
+            <p class="text-center font-size-sm font-weight-bolder"><?= $this->translate('Data not available or empty') ?></p>
+        <?php endif; ?>
+    </div>
+
+
+</div>

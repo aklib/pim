@@ -1,0 +1,83 @@
+<?php
+
+    /**
+     *
+     * container.phtml
+     *
+     * @since 21.05.2017
+     * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+     */
+
+    use Application\Utils\ClassUtils;
+    use Application\View\Model\Tab\TabItem;
+
+    $container = $this->container;
+
+    if (empty($container) || !$container->hasTabs()) {
+        echo 'empty tab container';
+        return;
+    }
+    $isSubTab = $this->isSubTab;
+    $count = 0;
+    $tabs = $container->getTabs();
+
+    $containerClass = ClassUtils::getShortName($this->container);
+
+
+    $id = $this->container->getHref();
+
+    /* $outerClass = $isSubTab ? '' : '';
+     $innerClass = $isSubTab ? '' : '';*/
+    $ulClass = $isSubTab ? 'nav flex-column nav-pills' : 'nav nav-tabs';
+    //$tabClass = 'm-grid-col m-grid-col-top m-grid-col-center m-grid-col-md-2';
+    $contentClass = '';
+    if ($isSubTab): ?>
+<div class="row"<?php echo devhelp(__FILE__) ?>>
+    <div class="col-3">
+        <?php endif; ?>
+        <ul class="<?php echo $ulClass; ?>" role="tablist">
+            <?php
+                /** @var TabItem $tab */
+                foreach ($tabs as $tab):
+                    if ($count++ === 0) {
+                        $tab->addClass('active');
+
+                    }
+                    ?>
+                    <li class="nav-item <?php echo $tab->getClass() ?>">
+                        <a class="nav-link <?php echo $tab->getClass() ?>" data-toggle="tab"
+                           href="#<?php echo $tab->getHref() ?>"><?php echo $this->decorate($tab, 'getTitle') ?></a>
+                    </li>
+                <?php endforeach; ?>
+        </ul>
+        <?php if ($isSubTab): ?>
+        <!-- eo col-->
+    </div>
+    <?php endif; ?>
+
+    <div class="tab-content mt-6 <?php echo($isSubTab ? ' col-9' : '') ?>">
+        <?php
+            $count = 0;
+            foreach ($tabs as $tab):
+                ?>
+                <div id="<?php echo $tab->getHref() ?>" class="tab-pane fade show <?php echo $tab->getClass() ?>">
+                    <?php
+                        if ($tab->hasTabs()) {
+                            echo $this->partial('default/tab/tabs.phtml',
+                                ['container' => $tab, 'isSubTab' => true]);
+                        }
+                        else {
+                            echo $this->render($tab->getContent());
+                        }
+                    ?>
+                </div>
+            <?php endforeach; ?>
+
+    </div>
+    <?php if ($isSubTab): ?>
+    <!-- eo row-->
+</div>
+<?php endif; ?>
+
+
+

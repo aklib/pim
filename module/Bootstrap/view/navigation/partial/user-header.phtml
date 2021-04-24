@@ -1,0 +1,132 @@
+<?php
+/**
+ * File user-header.phtml
+ * since: 11.07.2020
+ * author: alexej@kisselev.de
+ */
+
+use Company\Entity\Advertiser;
+use Doctrine\ORM\EntityManager;
+use Laminas\Navigation\Page\Mvc;
+use User\Entity\User;
+
+if (!$this->serviceManager()->has('authentication')) {
+    //  authentication module not available
+    return;
+}
+/** @var User $user */
+$user = $this->identity();
+if ($user === null) {
+    return;
+}
+/** @var Mvc $userPage */
+$userPage = null;
+/** @var Mvc $page */
+foreach ($this->container as $page) {
+    if ($page->get('scope') === 'user') {
+        $userPage = $page;
+        break;
+    }
+    //echo $this->partial('navigation/item', ['page' => $page, 'depth' => 1]);
+}
+
+if ($userPage === null) {
+    return;
+}
+$resource = $userPage->getController();
+$privilege = $userPage->getAction();
+$accepted = $this->acl()->isAllowed(null, $resource, $privilege);
+if (!$this->acl()->isAllowed(null, $resource, $privilege)) {
+    return;
+}
+
+$hasChildren = $userPage->hasPages();
+$children = [];
+if ($hasChildren) {
+    $children = [];
+    /** @var Mvc $child */
+    foreach ($userPage->getPages() as $child) {
+        if ($child->get('visible') === false || $child->get('hidden') === true) {
+            continue;
+        }
+        if ($this->acl()->isAllowed(null, $child->getController(), $child->getAction())) {
+            $children[] = $child;
+        }
+    }
+}
+
+if ($hasChildren && empty($children)) {
+    // the user has no allowed pages
+    return;
+}
+
+?>
+
+
+<!--begin::User-->
+<div class="dropdown"<?php echo devhelp(__FILE__) ?>>
+
+    <!--begin::Toggle-->
+    <div class="topbar-item" data-toggle="dropdown" data-offset="0px,0px">
+        <div class="btn btn-icon w-auto btn-clean d-flex align-items-center btn-lg px-2">
+            <?php
+            if ($this->acl()->isAdvertiser()):
+                ?>
+                <span class="text-dark-50 font-italic font-weight-light font-size-base d-none d-md-inline mr-10">
+            <?php
+
+            /** @var EntityManager $em */
+            $em = $this->serviceManager()->get(EntityManager::class);
+            $balance = $em->getRepository(Advertiser::class)->getBalance();
+            echo $this->translate('Current balance: ') . ' ' . str_replace('.', ',', $balance) . '$';
+            ?>
+                </span>
+            <?php
+            endif;
+            ?>
+            <span class="text-dark-50 font-size-base d-none d-md-inline mr-3"><i class="icon-md text-dark-50 flaticon-user-ok"></i>&nbsp;<?= $user->getFirstName() ?></span>
+        </div>
+    </div>
+
+    <!--end::Toggle-->
+
+    <!--begin::Dropdown-->
+    <div class="dropdown-menu p-0 m-0 dropdown-menu-right dropdown-menu-anim-up dropdown-menu-md shadow p-0">
+        <ul class="navi navi-hover pt-4">
+            <?php
+            /** @var Mvc $page */
+            foreach ($children as $page):?>
+                <!--begin::Item-->
+                <li class="navi-item <?= $page->getAction() === 'logout' ? ' bg-dark-o-5' : '' ?>">
+                    <?php if ($page->getAction() === 'logout'): ?>
+                        <div class="separator separator-solid"></div>
+                    <?php endif;
+
+                    if ($page->isVisible()) {
+                        $href = $page->getHref();
+                        $class = '';
+                        $title = '';
+                    } else {
+                        $href = 'javascript:;';
+                        $class = ' disabled';
+                        $title = 'Disabled yet. Coming soon!';
+                    }
+                    ?>
+                    <a href="<?= $href ?>" class="navi-link<?= $class ?>" title="<?= $title ?>">
+                                <span class="navi-text">
+                                     <?php if ($page->get('icon') !== null): ?>
+                                         <span class="symbol symbol-20 mr-3">
+                                             <i class="menu-icon <?php echo $page->get('icon'); ?>"></i>
+                                        </span>
+                                     <?php endif; ?>
+                                    <?= $this->translate($page->getLabel()) ?>
+                                </span>
+                    </a>
+                </li>
+                <!--end::Item-->
+            <?php endforeach; ?>
+        </ul>
+    </div>
+    <!--end::Dropdown-->
+</div>
+<!--end::User-->

@@ -1,0 +1,103 @@
+<?php
+    /**
+     *
+     * elastica.phtml
+     *
+     * @since 23.09.2020
+     * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+     */
+
+    /* @var $collector Client */
+
+    use Application\Utils\OutputUtils;
+    use Elastic\Factory\Client;
+    use Elastica\Request;
+    use Elastica\Response;
+
+    $collector = $this->collector;
+
+    if ($collector->canHide()) {
+        return;
+    }
+    $data = $collector->getData();
+
+    $name = '(' . strtoupper(str_replace('elastica.', '', $collector->getName())) . ')';
+?>
+<div class="laminas-toolbar-entry"<?php echo devhelp(__FILE__); ?>>
+    <div class="laminas-toolbar-preview">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAM0AAADMCAYAAADQ4CfMAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAB47SURBVHja7J17cFRVnsd/Nwl5gCQdeSgQoJNx1REkAV1HBYeA7jCOzojWuqv7hwHXVWerRh5bzu5WzUiCs7U7LxOYqp1HjRLcmh1LtiTqzKzOjBJ2xceuSDMQRRdJI+EhBtIJEAgk9J7f7XszTUifc+7t+zj33t+36tqR3O503z6f+3ud8zsakAKpdDqND3F21LFjJjuq2VFh/FvcOC0+ylOT7EhlHfvZ0cmOnexIaJqWoqvLl0aXIDCQxAxAlrKj1vg55sKfQmgS7NjKjnYGUTtdfYImaKA0GKC4BYmMEJxWBIlBlCRoSCqDUq/gWzQBepFcOZLfsNSzYzM7etLB0QZ2xOnbI/kBy5Z0sIXvv56+TRLBYl37CB4SwWJPL4TZbaNEgLcB/hp2rHT0hQd7AQYOAJzaBWl8xGOwL/Pv5u+LKi58Tul0gJLp+r9rY2cDjJt98TnOqJkda8OWMCBovAEGM2EbwImUce82SPfvZo9v6qDokDihonKAsdcCVNwMWvl89jjfqY+PhdMmBs5GgoYka10QlqV5WZLjv4F035v6o25FvNKlX2HH7Qyim5l1mkFWh6BxP3YxgLHn26NFOfxTgL5t3oIiAmjyfflancVBL5ASNO4As4I9tNixKunDPwM4+kvn3C6nhbHQ1EdBq/yyXevTY1icFoKGZALTbDnYN2E5/BM1rIqsmNXRqh63A0/aiHOaCBqKXzaDxakv6QPfDx4sFyQQKgCmPALalIftZODQfV0dtDiHoHEGGIxbtliKXzBm2fsNdd0wO27b9G/aiXl2GHFOiqAhYHK7Yrp1+Wk4L4g9ly1Q4GghHMAxYwCPrIkkIbNWJOnUl2MZmLBZF2etTmDA0QIOCcYPC404wsp6k4QBUTtkprgn3QYmfeB7AGhhoqQpj4JW/WTowNECCgoWCxvAuUVZCE2LFYDY+9hhgCp2x/Y0ZOotUVTJDNBmbbbirm1m38E9BI0zsCwzQKl3+U+1QiYdmuS8F7m08sAnkN69NPzumPPgNLPrv5qgyc+y2K+sOwwPez846bJR+GycQIkWJurAmCqKgXZVq+ycNqzjrFa1AKopDEvcgKXe57fSaBbhjImXm6WA6Vga3NqLi8NNu2K9nmGTBGceu/YJgkYOGOdmBTsX8yyXsngEjJPgdBrgpAgaPjBy7o+KohhG3lXDGAfX8QQwMaApBAtaFQywl9l6/qkBGNp3DIY6j8H5zm44f/QkO04M/75g8vjMY/UEKDSPmokEjJ/gzHlNJjmgXHyjKQQM1jzqrIJy9rWPYPCdJAzuPmT57yJIRbOnwpjFV0LRtVPtfwBMK+9cRMBYlXxWDWdG16jipqkCDQbXSy3B8tJuGHh5l/6zE0KASu67Dopvvcr6++/8Vninxbit8gWgzd4sc6YybpqmADDSU+ndgGU0eMpW1OsWSOo9ISwIDcm+5GYOoJu2WIU2uZrPwEgH/YO7DsHp9e0XxCmueg5fnQMl988DbVwJP47Zfh0NegeGoe6miWs4Wxg0i/1+twU+AhOXBebsS7vg1Lde9gwYnYeX/8BAPSxwy75N492Z0QDpvY/9sYNObmH7q4bIQmME/uLB+8t34fTTb/pzcS67hH/CmU9ovDt2l2JW+8APZDyjNZGExnDL4jLAnHluuz8Ow7hiKKzmpKTxroitlEjOCePDXuHE1rjf1qbAB2DiMoG/n8DoF6ZaUMM5RcC44qYFwNr4YWkwjuFOjzn7+oe+AoPC4if36yUr4476tkH66HMy1qY+EtAYVoZrWjHYP/Pzt3z/7oQpZ7I0rlkbSH5blBRAa/NEVCyNsIB5el27azUYR5MAJwka1zSYyrS04qveL2vjNTQrRG6Znekw7rhngpiG3DOXkwJCaNDahBsa464Q5wf/29UAhlwzBaxNL6SP/6forMfCbmmWiayMl8XLvJIABI03sc0hobWJ+eGieQlNLe+X5177UJmvy1xGkNvS7KIx7YWwGQm/boMu2l2hhMbImuWc9o8WZnD3YWW+q8KaCeSeKWJt9C1G+GoIJTQgWCdz7u2kUl+VMN3c30HjWZ2EQMzrrQqVgGbwnU51rIzMTADxxEKSgwkBiak1S8MIDfdOMNR5XJnvSJvMr8+kaZKmai4axjULwwjNzNzAdCtRzJR2zaLaKdNP9QrjmlBCk/s+cvKsUt8PJQEUlL6FYq8ycY3v7tn5z06oBY2gRkNJAL/AEVqb2shYmvOfnlAImIn85c2UBPAvrhG7aNWRgUYlURJAYfHbY2EyYE7YoEnm/LS8O7tyrhnFM75JPAujLmzQ5Gzypl1SrMz3ImwY2EuZM18tjSAZEDZo9ueEZmyALA110PRX/Kby8ci4Z8IUr1fxzLhivquIdzmCxl8J3GOjvXFooGnP+QYmj1cirqFGGuorLc5chgqaJC+uKZw9xf94RvAe0jQTwH8NqZHu9wQao9t7IveAner7hRBP1KSips92RqZGFg8NNIZezPUL7NRfUO1vbEPdNEnSXomHf6sVMps2jRqEj2/588zGTJ3H4NzbnfrjkEcL06ibJkkpaIyMBnahWSkevCW6q5btrmF3Gtzh7Nw7nXC+87grM6IpCUBSApqs9rMN+WQ1TIhKvnZtJhZEC9TZra/2PI9bBTrQjIO6aYZGyUBCk2VZGt0J2DP7ZRYvzuxYhtBku3QIkh0wuep9k4YjyR1oGDAmLN5NaZg8Xj/GfCGeeQ/MfcMmHYO7DkrHRZQECII0fY9O7hmaFhxLY7hiG8Cnjocj4yIEyIRIJi6ibpoBwaaogvdrzzaxLXIAGM+tixNxEW5HiDAVjBNMGKVJmuqosNz3eCZvaKxsMputt46eh6c6zkJHKg2zYhrcNLkQbprEjsnelI3MuMiEiJIAAdG42cG1NEawv9mKO9Z3Lg0//2hQP/DnYYA+S7PjPPvpnP7/N00qgFmVBcMQlY/xeQNqimcUcRcqMkdu7VQWGiN+wf0y47LPQVCe6jh3ASw5rRADCA98Dgot0TWxAvjytCL2cwFUjfMYIqrRqKGxXCuDA2u/ktBYBQbdsMbEgO6G2RU+tyM1BJuSQ/r/T2fQXFNRAEuqChlEhTpUrqqP0s1KJAEqbhad4lnHSc0tYBoTZ4ethZtC9w1dOoyL0BI5Ghfhdg/vXUfNNPwGZvo32d3ycZlT29nRqmnaRlWg2QES67C7TqXhr7edycu65AtRdnJhVqWWV1yUPvA9gAPfp5HrDy6gVT8JMOURq09Eq9PkFjyaJDBSWbKOnvMMmAHo6k8rdenzSi6QtfEp8I+B9rn1ABNuz+dVXIFHkwAGt59ulAHm3vYBqWDfb1lNLpC18VglM0G7ulWUYraiVgOepOvQGHFMpwwwS353JrDf0ab6Et2dI2ujCDCzNgOUTnf6lXvYsZaB05LvC4mi5i2yFibIwnQ431WoYH71wzSg3dbYOaDVvu4GMKhKdjQzQ7Ah377PBQK3LC4O+oPhkvGk14aODvFN8uT7aVC7GfKz66vNZhamqFzq/HVvHIVFP/sINm63PKt9GTtezwccLR+37MZfnVYu6Lere+OF0HwDvytOeu83AI4+RyPcaWDkU8q6mn5/GBp/f2j4/+OVxdB421RouM7Sknl01+5h7lq7U5ZGGPhjHSYswOhxTXJIt5zcL3fSfTTCncUFtOrvSAOD387yTfsvAAaV7DkLyzYloea7u6CtQ3oKWqVhcRryhoa9CNZiuC/0fOegJ4VLr/V8UvCZKuYDlN9MY90JYUr5ivXSNZieM4OwmLljrdu7c57TyeC5+98+ZmAlGUgDctQCbLAKjjYKNBj810fFLcsW1m/evrOUX8fp3QbpjqU06PORxZRyJwMAgUGLIqtq5rK98MDnoG7KWFkjtljWVSsYJZbhAoOZpjACgzJnYpO1cRkYTClLArPjUL9lYEyrM3fdB3r8I2k8XjC8LMvuGTeWQZ8/jG5ZtkYuXcgZuJKsy2JKecu+E7aAuWBAs/hHEpxKA5y4NDTGyVzf7oeS0/vJ2pAuutFYTCm3vHFUByZ1Zijvv43gPMjiHBmvjh3PWLE09aLBJKplRMraUN1GHhi0zBj0SwKDlmHVr5zdoWHD9mOy4NQzA7JSFhqulXmlayi0scxoN4hXDgpuEJPvE3ZHIVmrweRKKTsJjoSrhvHNU7z4pkA2AfD0/52L1Jfd3CHxeSf/JVGRS3pK+UfSwMiklJ1QEwMSZxPIgCOyNHWiBIBf62P80oFTYndUwxoDf916NGVmyCbLFYMxpTxv3QfQvs/9nb5xFKPrlzjcb9tNM6HhFh6ErkpIJTORU6t6nCAZDRiXU8r5gnPPsx+LkgxobZ4YbXc1E5pa3rNfPTgYye9fZiInTH0EtOvek76rhlqYUrYwrd+JlLJdYR1n7e+EsROmoS+yNppBUg/vmVXP90d2HCyZWghPL5Dc3hD35Dz0E0gff4X9HK3WT3o2Mf4dSyllpzNklt8zO95b8XnRrAFko8bYmGzY0nDjGewoE1XhdJrVs8ZYcE3YHbb6n5jl2Z4JgiOSXVMhpWzXTVv9cpfoNDQqy0a6Z3HeMzpS0YQGW0X99kulem8BW2LuWhTgsZpSXsUGqVspZTvC5IMgAYEG6WuWoOnqPx9JYDbVlzrTmNCEZ1YbwKW3h+ci2Uwpt2z7VKmPgSCvFdduMJNWLw3NgVPRSjVj041Xv1TqfCfPivmgXf1sOJIGCqeUXbQ2d2VDM5N3dt/Z6EBzb7wINi0qdbd/NIt78A49DE/QXDeLKWU70/r9sDYvvS9cvNaQDQ1XYZ+gaeqhK4ug+YZiKWBSg4Owcm8HJM+czh+e2W3BiXtspJTRwqgMjKnWd4+J6jYx00UTQtN7NvzAYIassa5Y6lwEZe67W2FdVydUv/0aLN+TyBueICQNhmcpSwLj5CxlL4TvM3GoX+SiyUETBWBk08oIx6LEmxdA0nqkS4dnUeItaOs+4lzSQKGlB9qURwOZUnbBRfti5KF5irljssAkTvZdBMwFwWTqGNy9+10doI1H8hwwmDSY/aISSQM9pYz9lCUHnmopZSuSaMqh1zQ1UU+Ae7ecMTZdCo8wbsGumrI1mAwQ/6vHMrKKl5ZBY/xKWBibqP+clwYOZFrj4i7TXs00wJRy/ElpaDGlfM+z+5TNkEndINhxvLEOYqWFvPtCDY4a7mY45cVaqIDJ1GDkgUGrga6XFWBMV27Znp26dXIi7vE0aYDAWEwpY/wSZGCGb5AfCz9DLY6clGiQhQsY+Sp/U/IjfeDnI4TFjHucTRqsdwceTCnPed1ySjlx6HQoxsh+ceunahw9Sd4ZVWPDEfZg0dJKlR+BaWSHk8pOGqDLl1/S4P4MPFdtdC5pEOKUsmxMtvPwaZEHN1MIjevb83kg3J8Gi5aywCxn1sVpYEbGSAiOI0mDCV8xkgbb80oaWE0pt24/FqiUsqxSp4WfpwKhSXChqQy2pbFS5ce4BQdz6xFv0qVm3GPCYzVuutCtmmHMNDDgsbCi1E5Keblck4rASaIzZ1wfSel0GtcMxHKdteS3pwO53NlqDQYzZJha9kuYZauPTYA18ascybhB7xuQPvADbsbN6ixlnEqv2qRLJ4WdOff9/bVcr9Q0I+1c94a34VFIgMEsl5/AuJM0uJ+TNNBCMUvZB8VMaLbyzsLVi0ESTonJp8qvgrLhcSxpgJBg0gBTytjpMoIpZSegMd2zOAj2o7lm82nlJ29i3NJ8wxhYMq1I6nyzyp9XLOGR6i4ph5VV1dBwuQO7hA32SccvQZil7KTmTimD91ZcI3bPjA08uZEdzgJWHRgsWsoCkylaBgMYE/DspEFekgQGO8WEKaUsZUbKxF5VdmpsY1Chsbo0eV3XPn0ABgWYke6kCQ/WktxyKzGlPG/9B6FLKQuTMZXCJirJ7FHWJrqTY71DRWCsFi1X7n0/8F8uwoK1JEeSBiOvUYhTyiLNrBQuEflkmALmomG9pp13tqXOLB7I6tLkVXs7XC1aBj1pEPRZyvkKR1Etv50TXqLUSNPRxHsGpp6xWKiCrBYtscrf0tUZ6i8d4cHiLB5W4x6z62TUU8rxS4XuWeICaIzt07h2+e+YtXF1Db2ErC5NxoDfqyq/CkJrYydpELX45eJ4phjqppRZg0bG2qArtHqWf9bGztJkv4uWKiQNcHk2L/GhNy6+bUqkoZHYnzOBnTYvgob9YysI5qM9dOUYX5IC+S5NjqrwGmAjEMwa8lRfMx4arpsQ2XjmrlkxITT4n1wjf5Xo2c03lHjqpjm5NDmqQmvDuyb4ba65dWpkr48AGgz7XswJjRHbtInctKfnF7v+QRDMV/+sFP5CMgGBzS0ImNHVM3gO1iY/FATCxZG0NsvYZ+Yscza1lWdpTGvDXdWJ2bTGOvfS0FaXJqP7gc0tgli09EqYYRNZm+Y7p8sMoFC5Zg+IbxTt5s4BOUejMbVmueiVML5xo35jZ2lyGIqWbgt9jAf3cENWqCwrhJULJkfmmmDWDOM5wWUbnjHDHZEMHHTR1jkZoMtIhaXJYRampEVF0MfmXxYJa6PHcbcJ47iUGc8IoTHUCIJsmpPgqLY0OazWZq3gmkXF2qCVkYjh2kZu6gQCa4Mn3w2CoqcJDiYHqsbay6qpvDSZrE1krYx+j8n+B6mAwYhvFsmAg1Pz/wMthUVwEDis8svIrMHkvTiLrE2krQ1mzCSsTKsx/q1BkwXO3SDIqKHQtXr7zjJpdy2IS5PJ2gRblewzPWHDyliCxgAHY5u5MhbHhOHtO8q4kzytLE2moiVZG6fcsuavTtfjGatWxny+9YudWR6NPaDjss/BvTsbd5wd7guNcUvj3DHSRUs7/ZRJcgNow9W13GXUegPj7+4KzQpOvAlgLUognBK/2DFossDZAJzm6aOp61QafthxDh76kyJL/ZTzbQ9Lyq3q0jLYd+Ot3HM2bD8GD4ZgYdrcqWXw3mPXyBjh1QyYllw3mvxMfDrdiEkItz4k1WA8cleumAUrqqpDbW2wp9nrD18l45btYMDMy/XLvKcqsxdHaKQyawSMurENXmvR0oFn7o1HARh0y+4R3WScufDpNE4RXemU1cGlyWFfaamacD+dNezgydxmr+39FOw8dDoQvdAsAIP3j+XMEGz0BJoRsQ5anwY7z8e7HQJDRUvvVVk0Ro9tYkXWFhkiOCZAeKi0AnRRzSXwwgNXyKbNmwzPCTyFJh94zKXJVINR29qIhJYocTgD0c7D/b7tXSOZJTOF6eXlMie6voosC56FwElR00rLYFsbnjB5gCC1d57wxKVDdwzjL8HMZenA33NoRsQ8PTnNqBMbHZHyFg6IfTcuhnjpWNf+hhkXbdXduZP6z065dCuYdWm8baqVWQw7IFOPSakITT1kCqKj3+HeeIUKl4pYmuMLlnj+dzMQndStUIK5dFZT2/UsdsHJlxasi+6SsWOVFWBQXraVqcsdy5wjYBQRNlr35e9OHasfK4wpO6ZLp2fpOHGRTVhQLQyWVXbeq5fQ5IxnKPAnaC4aLCwuwWOp0ewC3TfcedmMixYyWFYusDWZlFvtVw2ambwkAEmNeOaLsQnc8bZ5z536sJs49lqYVr4Apo2/BUosbFVoVwgHArRU3GaJJ71waUw8hiBAk/PT7j/TTyNWEYkSAN2ndsHAUC8cPPEG7Pz0x/q/IUAmRJPK2M/j5qj40dCyNFmNX5R1zzCmIfmvWNEYrnvW3Z8BZrR/x2NP97/r/4+WZ9r4BTpEOkzMGvmoHYY71u7UCyphaQiaYMQzfQP7pV5nYLAX9vX8Wj9MiCaWGe4cglQ2xwuXDssba/OJXZSGpoegCQA0aeaSbbP1uggRunN4wEEYdulMazRp7BwYf9FGuraVhEy7pRYnXDG/ocmpXko3K5EEqBVYGnTBnJLp0plxEUIziYFUXXmH3bio3YhZ2t2+VkU0XEimai+pECYB3NKJgU/0Y6RLV3PpHTJxUdorYJSBpqKI2FXdPcuVBHBLF7h0hi38m3n7c8VCetN/EOzk55SU2EQTp26QwpEEcFN7un/B+/VdXr2PAhouJBlonIxn7CnNXLff8E6IG5OCowGNmzNqSbJJgArugLWbOXNSEuAuDBs0yVy/iFFMo0ASQOSefeL7e8SY6kTu94Hszw0bNKnciYBiGrW+u2cVdgerp/qMb21mhA2apF1/muR+PMOz9t2n/qDMez07xK1X1oUNmv25Y5oyGrkKx5T+JwGkFbpEACemGUPJAB+TAAsFywEO9m1T5N2mlYitlIAGVR+7lEawqkmAs58og3h5yYxIQZMQ+dUkNZMAAXLPwgWN0X09ZxS3MDaRvg1f4pmywCQBUONLZkbK0qDaeZaG6jWUBBCppKDCdggQVGi28n65dOLlNIo9VnCSAAyYwgqYOO5a3im9YYQmwf8CyUXzNqwOUhIgs3BNoPBZGmO9Qyq3pbmMXDRyz3IifvXEvwKuWQzx0oCcHyzT2KGCRrJHkmmkoZKqyheITtkfVmhe5P0y3471JHmJlwOokznDfgKCPgLJfPuZqQxNG++X9SwwJRdNBWjS8Fn/7qC4ZuCVa+YLNEaHEO4HXFlVQyPagyQAv5umOu7Z+OIZ8PlJwnjm2dBCY2gd75e4YSpZGwWSAKd2KYH3DdP+QXRS0qumGn5Cgx8wxQtQydr465553Ugjl9AtE1gZT10z36AxXDSyNj6qXuCaqdBIY3zxTPiC2Mqga7Y29NAY4rYLJWvjbxLA/54AGtwy459lOm+2GvMaww+NYW3ayNr4kwSYqXhRE+MYbBQoUI/XVsZvSyNMCKC1obqNOxK2oPUxCXDDtH+UCf5R6722Mr5DY2Q8uEEcumgi/5vkbEyDqyP9SgJYAKaTjZ9GP96jCn3PhHu3b7i6ltw0z+IZ8KXzTElhDG6t/rEsMBj8L/br+vkOjWFeuW4a1hPITXMunnnqilncc6aV3wK3Vf+rXlT0Qtjc/L7Z/y2TWjaBWe2HW5Z9DX2X0U4U90PkdhO5e/e70NZ9hEZ+HmpkNx/ZGxCmnf/n4L8M73DmvHWp0N2x2su/buVpTX65ZUpBY4Czkj00887BHdPmvvtftLGtTS1icczrdTdZfp7T8CAstZf/LdRe9nWrO6Jhenm539dRU+lLZeBswRiVd07yTL8OToo2grKk6tIyHZh8WmXh9hedPb+GD479YnjDWiugYHW/pvJOffczG1ICGBWhiUNmY1Gum9aeOgaLEm8RCR4CM5oO9r1hTLdJ6Rm3E8YqTzMWwnZL5SUzZab1i4RbAa5SKS4ExcARumn6bedIFyzfkyAiBKosKtKBkVjclwKPOlRaGQ5G0N+i0ptSbn8a4wK1ic5bdnkVZdQk7ogvzP5TGWAwCVOJQbZCbx/f02LVgFESGkPouyZFJ1nJBEXRwjxzda1MYdgcnPolZUcNeNSggueOsWOel9P9A+2eWY1v9CvctQ9W7X2fSLHukqH7cw8bnG0jrr1uzNmxhh1xD986QtKkKiyqWxqz6CkV/OFUm82zr6dZA0bQ/971X5RtULJ2JDDGtcejFV9O1uo7AMsi9jcXqQ6M0pYm667XaNzxhMJ0NGbVolrHmXtJOYthrpfNkkkXCQ3LU29Yn4UOWR+EA5tHthgz3gMVK0LYwEFXLWozB1ZWVUOzYHpMlmzXPLIAqjUeESDRZkopw1ohJJjybAsaKIGDxio4ekSb/Aia2BGNgL/OSktfx4uEBkgxA6BYFij6EWRAAg2NHXDC7q7htBjMkFkoWipTVSdoFAYHhdm1dV2doYEHg32cqWyxYTwBE1Vo7IKDVgddto1HugL7ZWF2cEVVjR6/4KpWC/J9ZjBBowY4GIRuAIuZnCDCkwcsSk5DIWj8BQeB2QI2UqAmPC92H1F2xnQesKCw0v9gEOoeBI334GC2Bl2PFXaej/DgrGmMeRIn+5T4TDj1BTvxZPpaj7HzElsMYJI0xAkaHjzLIM9pHwgQWp627k91kLy0KFjBx/15Gi6fbhcUlN7SiNwxgsaqu4ZWpyHf10KA0PIgPDuNR6chwTZKmAHL7Dc6Jt+XJetC0PhrdUZT4mSvnrZGiHoGz8F+9jMuwc4cgxeBgSDg7skV7BHTxNigDwFxeDEYWReCxlF4TKsTD+lHRFCawlZxJyngsrGjJR0ubTBcURJZGtfjnWUBtjxoTTZCZlYwxS0EjS8xD8JTH4C3m8yChdwwgkYJ64ONPO5SzPqYVqWNipMEjcoA4ZoQXGC11CcLhOtMthIoBE1QAcJZBnUGPOZKRSctUcqAZCdkVjC2k+tF0IQZJHycCZn18xUcmMxFWL3wx5WLCEqKAvlg6/8FGAB7L8tKANIZNgAAAABJRU5ErkJggg=="
+             title="ElasticSearch call" height="20"/>
+        <span class="laminas-toolbar-info">
+            <?php
+                $elapsedTime = 0;
+                foreach ($data as $item) {
+                    if (is_object($item['response'])) {
+                        $elapsedTime += (float)$item['response']->getQueryTime();
+                    }
+                }
+                $totalTime = round($elapsedTime, 4);
+            ?>
+            <?php echo count($data) . " queries in $totalTime ms"; ?>
+        </span>
+    </div>
+    <div class="laminas-toolbar-detail">
+        <span class="laminas-toolbar-info laminas-toolbar-info-heading">Elastica Module</span>
+        <span class="laminas-toolbar-info ddt-toolbar-info">
+            <hr/>
+            <?php
+                foreach ($data as $i => $item):
+                    /** @var Request $request */
+                    $request = $collector->getProfilerRequest($i);
+                    /** @var Response $response */
+                    $response = $collector->getProfilerResult($i);
+                    $method = $request->getMethod() . ' ' . $request->getConnection()->getHost() . ':' . $request->getConnection()->getPort() . '/' . $request->getPath();
+                    if (!empty($method)) { ?>
+                        <span class="clear"></span>
+                        <span class="laminas-detail-label">Called method</span>
+                        <span class="laminas-detail-value ddt-detail-query ddt-detail-value"><?php echo $method; ?></span>
+                    <?php if (is_object($response)) { ?>
+                            <span class="laminas-toolbar-info laminas-toolbar-info-heading">Response</span>
+                            <span class="laminas-toolbar-info">Status: <?php echo $response->getStatus(); ?></span>
+                        <?php if ($response->isOk()) {
+                                ?>
+                                <span class="laminas-toolbar-info">Query Time: <?php echo round($response->getQueryTime(), 4) ?> ms</span>
+                            <?php
+                                $data = $response->getData();
+                                //throws exception by refrech index
+                                if (isset($data['took'])):
+                                    ?>
+                                    <pre class="prettyprint lang-xml"><?php
+                                            //echo OutputUtils::jsonpp(json_encode($response->getData()), false, 1);
+                                        ?>
+                                    </pre>
+                                    <span class="laminas-toolbar-info">Engine Time: <?php echo $response->getEngineTime(); ?> ms</span>
+                                <?php endif ?>
+                            <?php } else { ?>
+                                <span class="laminas-toolbar-info">Time: <?php echo $response->getError(); ?></span>
+                            <?php } ?>
+                        <?php } ?>
+                    <span class="clear"></span>
+                        <hr/>
+                        <span class="laminas-toolbar-info">
+                        <?php if (!empty($request)) { ?>
+                            <span class="laminas-toolbar-info laminas-toolbar-info-heading">Request</span>
+                            <pre class="prettyprint lang-xml"><?php
+                                    //                                echo indent(json_encode($request->toArray()));//echo \GcBase\Utils\Utility::xmlpp($request, true);
+                                    echo OutputUtils::jsonpp(json_encode($request->getData()), false, 1);
+                                ?>
+                            </pre>
+                        <?php } ?>
+                    </span>
+                        <hr/>
+                        <?php
+                    } else {
+                        echo 'no ElasticSearch call';
+                    }
+                    ?>
+
+                <?php
+                endforeach;
+            ?>
+        </span>
+    </div>
+</div>

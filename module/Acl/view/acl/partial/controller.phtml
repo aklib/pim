@@ -1,0 +1,98 @@
+<?php
+/**
+ *
+ * controller.phtml
+ *
+ * @since 21.05.2017
+ * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+ */
+
+use Acl\Controller\MVCController;
+
+$controllerActions = $this->controllerActions;
+if (!is_array($controllerActions)) {
+    echo 'ret';
+    return;
+}
+$roles = $this->roles;
+$values = (array)$this->values;
+$controller = $this->controller;
+$controllerClass = $this->controllerClass;
+$editAllowed = $this->acl()->isAllowed(null, MVCController::class, 'edit');
+?>
+<div class="col-md-12"<?php devhelp(__FILE__) ?>>
+    <table class="table  table-head-custom dataTable">
+        <thead>
+        <tr>
+            <th class="text-center col-md-2"><label><?php echo $this->translate('Action'); ?></label></th>
+            <?php
+            foreach ($roles as $role):
+                $roleName = $role->getName();
+                ?>
+                <th class="text-center" title=""><?php echo $this->translate($role->getDescription()); ?>
+                    <div class="text-nowrap">
+                        <a data-action="uncheck" title="uncheck all" data-target="role-<?php echo $role->getId(); ?>"
+                           class="btn btn-icon btn-clean checker">
+                            <i class="la la-square-o icon-lg"></i>
+                        </a>
+                        <a data-action="check" title="check all" data-target="role-<?php echo $role->getId(); ?>"
+                           class="btn btn-icon btn-clean checker">
+                            <i class="la la-check-square-o icon-lg"></i>
+                        </a>
+                    </div>
+                </th>
+            <?php endforeach; ?>
+        </tr>
+        </thead>
+
+        <?php
+        foreach ($controllerActions as $action):
+
+            $normalized = str_replace('\\', '\\', $controllerClass);
+            $fieldName = $normalized . '[' . $action . ']';
+            ?>
+            <tr>
+                <td class="text-right">
+                    <label class="control-label"><?= $this->translate($action) ?></label>
+                    <input type="hidden" value="0" name="<?php echo $fieldName ?>">
+                </td>
+                <?php
+                foreach ($roles as $role):
+                    $field = $fieldName . '[' . $role->getId() . ']';
+                    $checked = '';
+                    if (isset($values[$role->getId()]) && in_array($action, $values[$role->getId()], true)) {
+                        $checked = ' checked';
+                    }
+
+                    ?>
+                    <td class="text-center role-<?php echo $role->getId(); ?>" data-scope="col">
+
+                        <label class="checkbox checkbox-outline checkbox-success justify-content-center">
+                            <?php if ($editAllowed): ?>
+                                <input name="<?php echo $field ?>" value="0" type="hidden">
+                                <input name="<?php echo $field ?>" value="1" type="checkbox" <?= $checked ?>>
+                                <span></span>
+                            <?php endif; ?>
+                            <?php if (!$editAllowed):
+                                $class = empty($checked) ? 'la la-square-o icon-xl' : 'la la-check-square-o icon-xl text-success';
+                                ?>
+                                <i class="<?= $class ?>"></i>
+                            <?php endif; ?>
+
+                        </label>
+                    </td>
+                <?php endforeach; ?>
+            </tr>
+        <?php endforeach;
+        if ($editAllowed):?>
+
+            <tr>
+                <td colspan="<?= count($roles) + 1 ?>" style="padding: 0;">
+                    <div class="form-actions text-right">
+                        <button type="submit" class="btn btn-success mt-6"><?php echo $this->translate('Apply') ?></button>
+                    </div>
+                </td>
+            </tr>
+        <?php endif; ?>
+    </table>
+</div>

@@ -1,0 +1,90 @@
+<?php
+    /**
+     *
+     * pager.phtml
+     *
+     * @since 01.05.2017
+     * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+     */
+    if (!$this->pageCount) {
+        return;
+    }
+    $hasPrevious = isset($this->previous);
+    $hasNext = isset($this->next);
+    $page = $this->page;
+?>
+
+<div class="dataTables_wrapper dt-bootstrap4 no-footer"<?php echo devhelp(__FILE__); ?>>
+    <div class="row">
+        <div class="col">
+            <div class="dataTables_paginate">
+                <?php if(count($this->pagesInRange) > 1):?>
+                <ul class="pagination pagination-sm justify-content-start">
+                    <!-- Previous page link -->
+                    <li class="page-item first<?= $page > 1 ? '' : ' disabled invisible' ?>">
+                        <a class="page-link font-weight-light" title="First<?= $page > 1 ? '' : ' disabled' ?>" href="<?php echo $this->urlx(['page' => 1, 'limit' => $this->itemCountPerPage]); ?>">
+                            <i class="ki ki-double-arrow-back"></i>
+                        </a>
+                    </li>
+                    <li class="page-item previous <?= $hasPrevious ? '' : ' disabled invisible' ?>">
+                        <a class="page-link font-weight-light" title="Prev<?= $page > 1 ? '' : ' disabled invisible' ?>" href="<?php echo $this->urlx(['page' => $this->previous, 'limit' => $this->itemCountPerPage]); ?>">
+                            <i class="ki ki-arrow-back"></i>
+                        </a>
+                    </li>
+                    <!-- eo Previous page link -->
+
+                    <!-- Numbered page links -->
+                    <?php foreach ($this->pagesInRange as $page): ?>
+                        <li class="page-item<?= $page !== $this->current ? '' : ' active' ?>">
+                            <a class="page-link font-weight-light" href="<?php echo $this->urlx(['page' => $page, 'limit' => $this->itemCountPerPage]); ?>">
+                                <?php echo $page; ?>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+                    <!-- End Numbered page links -->
+                    <li class="page-item next<?= ($page !== $this->next ? '' : ' active') . ($page !== $this->last ? '' : ' disabled invisible') ?>">
+                        <a class="page-link font-weight-light" title="Next" href="<?php echo $this->urlx(['page' => $this->next, 'limit' => $this->itemCountPerPage]); ?>">
+                            <i class="ki ki-arrow-next"></i>
+                        </a>
+                    </li>
+                    <li class="page-item last<?= $page !== $this->last ? '' : ' disabled invisible' ?>">
+                        <a class="page-link font-weight-light" title="Last" href="<?php echo $this->urlx(['page' => $this->last, 'limit' => $this->itemCountPerPage]); ?>">
+                            <i class="ki ki-double-arrow-next"></i>
+                        </a>
+                    </li>
+                </ul>
+                <?php endif; ?>
+            </div>
+        </div>
+        <div class="col text-center">
+            <?php
+                $text = $this->translate('Showing') . ' ' . $this->firstItemNumber . ' ' .
+                    $this->translate(' to ') . $this->lastItemNumber . ' ' .
+                    $this->translate('of') . ' ' . $this->totalItemCount . ' ' . $this->translate('entries');
+                //echo $text;
+            ?>
+            <label class="btn btn-sm btn-clean"><?= $text ?></label>
+        </div>
+        <div class="col">
+            <div class="dataTables_paginate">
+                <ul class="pagination pagination-sm justify-content-end">
+                    <?php
+                        /*
+                         * @todo: ak read paginator settings from config
+                         */
+                        $limits = is_array($this->limits) ? $this->limits : [20, 50, 100, 200];
+
+                        foreach ($limits as $limit):
+                            ?>
+                            <li class="paginate_button page-item <?= $limit !== $this->itemCountPerPage ? '' : ' active' ?>">
+                                <a class="page-link font-weight-light" title="Show <?= $limit ?> datasets per page"
+                                   href="<?php echo $this->urlx(['page' => 1, 'limit' => $limit]); ?>"><?php echo $limit ?></a>
+                            </li>
+                        <?php endforeach; ?>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+

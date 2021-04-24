@@ -1,0 +1,39 @@
+<?php
+    /**
+     * subheader-v1.phtml
+     *
+     * @since 23.12.2019
+     * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+     */
+?>
+<!--begin::Subheader-->
+<div class="subheader py-2 py-lg-4 subheader-solid" id="kt_subheader"<?php echo devhelp(__FILE__) ?>>
+    <div class="container-fluid d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
+        <!--begin::Page Heading-->
+        <div class="d-flex align-items-center flex-wrap mr-2">
+
+            <!--begin::Page Title-->
+            <?php if (!empty($this->title)): ?>
+                <h5 class="text-dark font-weight-bold my-1 mr-5"><?= $this->translate($this->title) ?></h5>
+                <div class="subheader-separator subheader-separator-ver mt-2 mb-2 mr-4 bg-gray-200"></div>
+            <?php endif; ?>
+            <!--end::Page Title-->
+            <?php
+                // ACL is checked in script
+                echo $this->navigation()->breadcrumbs()->setUseAcl(false)->setPartial('navigation/breadcrumbs');
+            ?>
+        </div>
+        <!--end::Page Heading-->
+        <!--begin::Toolbar-->
+        <?php if (!empty($this->toolbar)): ?>
+            <div class="d-flex align-items-center">
+                <!--begin::Actions-->
+                <?= $this->render($this->toolbar) ?>
+                <!--end::Actions-->
+            </div>
+        <?php endif; ?>
+        <!--end::Toolbar-->
+    </div>
+</div>
+
+<!--end::Subheader-->

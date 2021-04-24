@@ -1,0 +1,66 @@
+<?php
+/**
+ * layout-default.phtml
+ *
+ * @since 27.05.2020
+ * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+ */
+
+use Laminas\Form\Form;
+
+/** @var Form $form */
+$form = $this->form;
+?>
+<!--begin::Main-->
+
+<!--[html-partial:include:{"file":"partials/_header-mobile.html"}]/-->
+<?php echo $this->render('layout/header/base-mobile'); ?>
+
+<?php
+
+if (!empty($form)) {
+    echo $this->form()->openTag($form);
+}
+?>
+
+
+<div class="d-flex flex-column flex-root"<?php echo devhelp(__FILE__) ?>>
+    <!--begin::Page-->
+
+    <div class="d-flex flex-row flex-column-fluid page">
+
+        <!--[html-partial:include:{"file":"partials/_aside.html"}]/-->
+        <?php
+        if (!empty($this->aside)) {
+            echo $this->aside;
+        }
+        ?>
+
+        <!--begin::Wrapper-->
+        <div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
+
+            <!--[html-partial:include:{"file":"partials/_header.html"}]/-->
+            <?php echo $this->render('layout/header/base') ?>
+            <!--begin::Content-->
+            <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+
+                <!--[html-partial:include:{"file":"partials/_subheader/subheader-v1.html"}]/-->
+                <?php echo $this->render('layout/subheader') ?>
+                <!--[html-partial:include:{"file":"partials/_content.html"}]/-->
+                <?php echo $this->render('layout/content') ?>
+
+            </div>
+            <!--end::Content-->
+            <!--[html-partial:include:{"file":"partials/_footer.html"}]/-->
+            <?php echo $this->render('layout/footer') ?>
+        </div>
+        <!--end::Wrapper-->
+    </div>
+    <!--end::Page-->
+</div>
+<?php
+if (!empty($form)) {
+    echo $this->form()->closeTag($form);
+}
+?>
+<!--end::Main-->

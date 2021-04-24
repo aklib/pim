@@ -1,0 +1,463 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: ZendSkeletonApplication\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-07-05 22:17-0700\n"
+"PO-Revision-Date: 2012-07-09 10:22+0100\n"
+"Last-Translator: Rob Allen <rob@akrabat.com>\n"
+"Language-Team: ZF Contibutors <zf-devteam@zend.com>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: translate\n"
+"X-Poedit-Language: English\n"
+"X-Poedit-Country: UNITED STATES\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../view/error/index.phtml:1
+msgid "An error occurred"
+msgstr ""
+
+#: ../view/error/index.phtml:8
+msgid "Additional information"
+msgstr ""
+
+#: ../view/error/index.phtml:11
+#: ../view/error/index.phtml:35
+msgid "File"
+msgstr ""
+
+#: ../view/error/index.phtml:15
+#: ../view/error/index.phtml:39
+msgid "Message"
+msgstr ""
+
+#: ../view/error/index.phtml:19
+#: ../view/error/index.phtml:43
+#: ../view/error/404.phtml:55
+msgid "Stack trace"
+msgstr ""
+
+#: ../view/error/index.phtml:29
+msgid "Previous exceptions"
+msgstr ""
+
+#: ../view/error/index.phtml:58
+msgid "No Exception available"
+msgstr ""
+
+#: ../view/error/404.phtml:1
+msgid "A 404 error occurred"
+msgstr ""
+
+#: ../view/error/404.phtml:10
+msgid "The requested controller was unable to dispatch the request."
+msgstr ""
+
+#: ../view/error/404.phtml:13
+msgid "The requested controller could not be mapped to an existing controller class."
+msgstr ""
+
+#: ../view/error/404.phtml:16
+msgid "The requested controller was not dispatchable."
+msgstr ""
+
+#: ../view/error/404.phtml:19
+msgid "The requested URL could not be matched by routing."
+msgstr ""
+
+#: ../view/error/404.phtml:22
+msgid "We cannot determine at this time why a 404 was generated."
+msgstr ""
+
+#: ../view/error/404.phtml:34
+msgid "Controller"
+msgstr ""
+
+#: ../view/error/404.phtml:41
+#, php-format
+msgid "resolves to %s"
+msgstr ""
+
+#: ../view/error/404.phtml:51
+msgid "Exception"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "#generic: request error message"
+msgstr "While processing your request a program error has occurred, please try it again"
+
+msgid "#generic: email error message"
+msgstr "An error occurred while sending the email, please try it again later"
+
+msgid "Logstash"
+msgstr "Clicks Data"
+
+msgid "configure"
+msgstr "Configure"
+
+msgid "reorder"
+msgstr "Reorder"
+
+msgid "delete"
+msgstr "Delete"
+
+msgid "lastName"
+msgstr "Last Name"
+
+msgid "firstName"
+msgstr "First Name"
+
+msgid "lastname"
+msgstr "Last Name"
+
+msgid "firstname"
+msgstr "First Name"
+
+msgid "status"
+msgstr "Status"
+
+msgid "email"
+msgstr "E-Mail"
+
+msgid "password"
+msgstr "Password"
+
+msgid "Application\\Controller\\IndexController"
+msgstr "Application Overview"
+
+msgid "User\\Controller\\UserController"
+msgstr "All Users Management"
+
+msgid "User\\Controller\\ProfileController"
+msgstr "Own Profile Management"
+
+msgid "Acl\\Controller\\MVCController"
+msgstr "Access Resources"
+
+msgid "Acl\\Controller\\ColumnController"
+msgstr "Access DataTable Columns"
+
+msgid "Attribute\\Controller\\AttributeController"
+msgstr "Attribute Management"
+
+msgid "Category\\Controller\\CategoryController"
+msgstr "Category Management"
+
+msgid "Attribute\\Controller\\TabController"
+msgstr "Attribute Tab Management"
+
+msgid "Company\\Controller\\PublisherController"
+msgstr "Publisher Management"
+
+msgid "Company\\Controller\\AdvertiserController"
+msgstr "Advertiser Management"
+
+msgid "Company\\Controller\\DepositController"
+msgstr "Advertiser Deposit"
+
+msgid "Report\\Controller\\DashboardController"
+msgstr "Dashboard"
+
+msgid "Report\\Controller\\ReportController"
+msgstr "Report"
+
+msgid "Application\\Controller\\HelpController"
+msgstr "Help Center"
+
+msgid "edit"
+msgstr "Update Data"
+
+msgid "create"
+msgstr "Create New"
+
+msgid "list"
+msgstr "See List"
+
+msgid "index"
+msgstr "Overview"
+
+msgid "changepassword"
+msgstr "Set User Password"
+
+msgid "profile"
+msgstr "Update Profile"
+
+msgid "userrole"
+msgstr "Role"
+
+msgid "userRole"
+msgstr "Role"
+
+msgid "changed"
+msgstr "Updated"
+
+msgid "created"
+msgstr "Created"
+
+msgid "code"
+msgstr "Code"
+
+msgid "name"
+msgstr "Name"
+
+msgid "sortOrder"
+msgstr "Order"
+
+msgid "tab"
+msgstr "Tab"
+
+msgid "categories"
+msgstr "Categories"
+
+msgid "category"
+msgstr "Category"
+
+msgid "attributes"
+msgstr "Attributes"
+
+msgid "attribute"
+msgstr "Attribute"
+
+msgid "label"
+msgstr "Label"
+
+msgid "key"
+msgstr "Unique Key"
+
+msgid "pattern"
+msgstr "Validation Pattern"
+
+msgid "context"
+msgstr "Target Entity"
+
+msgid "type"
+msgstr "Type"
+
+msgid "context-user"
+msgstr "User Attribute"
+
+msgid "context-company"
+msgstr "Company Attribute"
+
+msgid "context-product"
+msgstr "Campaign Attribute"
+
+msgid "infoText"
+msgstr "Info Text"
+
+msgid "placeholder"
+msgstr "Placeholder"
+
+msgid "multiple"
+msgstr "Multiple"
+
+msgid "required"
+msgstr "Required"
+
+msgid "user"
+msgstr "User"
+
+msgid "product"
+msgstr "Campaign"
+
+msgid "Product"
+msgstr "Campaign"
+
+msgid "company"
+msgstr "Company"
+
+msgid "Product\\Controller\\ProductController"
+msgstr "Campaign Management"
+
+msgid "url"
+msgstr "URL"
+
+msgid "title"
+msgstr "Title"
+
+msgid "description"
+msgstr "Description"
+
+msgid "creativeType"
+msgstr "Creative Type"
+
+msgid "creativeFiles"
+msgstr "Creative Images"
+
+msgid "native"
+msgstr "Native"
+
+msgid "popunder"
+msgstr "Popunder"
+
+msgid "push"
+msgstr "Push"
+
+msgid "redirect"
+msgstr "Redirect"
+
+msgid "banner"
+msgstr "Banner"
+
+msgid "active"
+msgstr "Active"
+
+msgid "inactive"
+msgstr "Inactive"
+
+msgid "Creative Type"
+msgstr "Campaign Type"
+
+msgid "advertiser"
+msgstr "Advertiser"
+
+msgid "publisher"
+msgstr "Publisher"
+
+msgid "users"
+msgstr "Users"
+
+msgid "cpc"
+msgstr "CPC"
+
+msgid "cpm"
+msgstr "CPM"
+
+msgid "maxlength"
+msgstr "Maxlength"
+
+msgid "mainstream"
+msgstr "Mainstream"
+
+msgid "adult"
+msgstr "Adult"
+
+msgid "daily_budget"
+msgstr "Daily Budget"
+msgid "total_budget"
+msgstr "Total Budget"
+msgid "pricing_model"
+msgstr "Pricing Model"
+
+msgid "publishers"
+msgstr "Publishers"
+
+msgid "advertisers"
+msgstr "Advertisers"
+
+msgid "skype"
+msgstr "Skype"
+
+msgid "address"
+msgstr "Address"
+
+msgid "infotext"
+msgstr "Info text"
+
+msgid "sortorder"
+msgstr "Sort order"
+
+msgid "campaigns"
+msgstr "Campaigns"
+
+msgid "push_notification"
+msgstr "Push Notification"
+
+msgid "attributeOptions"
+msgstr "Attribute Options"
+
+msgid "groupName"
+msgstr "Element Group"
+
+msgid "capping"
+msgstr "Capping"
+
+msgid "mainstream quality 1 traffic"
+msgstr "Mainstream: Quality 1"
+
+msgid "mainstream quality 2 traffic"
+msgstr "Mainstream: Quality 2"
+
+msgid "mainstream quality 3 traffic"
+msgstr "Mainstream: Quality 3"
+
+msgid "adult quality 1 traffic"
+msgstr "Adult: Quality 1"
+
+msgid "adult quality 2 traffic"
+msgstr "Adult: Quality 2"
+
+msgid "adult quality 3 traffic"
+msgstr "Adult: Quality 3"
+
+msgid "mainstream quality 1"
+msgstr "Mainstream: Quality 1"
+
+msgid "mainstream quality 2"
+msgstr "Mainstream: Quality 2"
+
+msgid "mainstream quality 3"
+msgstr "Mainstream: Quality 3"
+
+msgid "adult quality 1"
+msgstr "Adult: Quality 1"
+
+msgid "adult quality 2"
+msgstr "Adult: Quality 2"
+
+msgid "adult quality 3"
+msgstr "Adult: Quality 3"
+
+msgid "amount"
+msgstr "Amount"
+
+msgid "method"
+msgstr "Payment Method"
+
+msgid "balance"
+msgstr "Balance"
+
+msgid "admin#profit"
+msgstr "Profit Platform"
+
+msgid "admin#adminRevenue"
+msgstr "Revenue Publisher"
+
+msgid "admin#bidCount"
+msgstr "Count Bids"
+
+msgid "admin#bidWon"
+msgstr "Bid Won"
+
+msgid "admin#adminCosts"
+msgstr "Costs Advertiser"
+
+msgid "admin#bidClicked"
+msgstr "Bid Clicked"
+
+msgid "admin#totalHitsImport"
+msgstr "<span class=\"label label-lg font-weight-bold label-light-default label-inline\">Adv: Request count</span>"
+
+msgid "admin#bidClickedImport"
+msgstr "<span class=\"label label-lg font-weight-bold label-light-default label-inline\">Adv: Bids Clicked Verified</span>"
+
+msgid "admin#bidClickedGrossImport"
+msgstr "<span class=\"label label-lg font-weight-bold label-light-default label-inline\">Adv: Bids Clicked</span>"
+
+msgid "admin#count"
+msgstr "Request Count"
+
+
+
+
+
+
+
+
+
+

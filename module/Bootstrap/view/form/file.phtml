@@ -1,0 +1,22 @@
+<?php
+    /**
+     * File file.phtml
+     *
+     * since: 13.09.2020
+     * author: alexej@kisselev.de
+     */
+
+    use Laminas\Form\Element;
+
+    /** @var Element $element */
+    $element = $this->element;
+    $id = $element->getAttribute('id');
+?>
+
+
+<div class="custom-file"<?php echo devhelp(__FILE__); ?>>
+    <?php
+        echo $this->html
+    ?>
+    <label class="custom-file-label" for="<?= $id ?>"><?= $this->translate('Choose file') ?></label>
+</div>

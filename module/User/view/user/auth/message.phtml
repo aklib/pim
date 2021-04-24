@@ -1,0 +1,18 @@
+<?php
+/**
+ * File message.phtml
+ *
+ * since: 20.01.2021
+ * author: alexej@kisselev.de
+ */
+?>
+<div class="login-signin"<?php echo devhelp(__FILE__) ?>>
+    <div class="mb-20">
+        <h3 class="mb-10"><?= $this->translate('Reset password') ?></h3>
+        <h6><?= $this->translate('Please check your E-Mail and click on this link to complete the password reset') ?>.</h6>
+        <div class="text-muted font-weight-bold">
+            <?= $this->translate("If you did not receive the password reset email, check your email account's spam and junk filters") ?>.
+        </div>
+    </div>
+    <a href="<?= $this->url('auth', ['action' => 'login']) ?>" class="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-4"><?= $this->translate('Back to Login') ?></a>
+</div>

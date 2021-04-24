@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * index.phtml
+ *
+ * @since 11.01.2021
+ * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+ * @copyright apagmedia
+ */
+if (empty($templates)) {
+    echo 'No email templates found';
+    return;
+}
+?>
+<ul>
+    <?php
+    foreach ($templates as $template):
+        $url = $this->url('default/admin', ['action' => 'template', 'controller' => 'preview'], ['query' => ['name' => urldecode($template)]]);
+        ?>
+        <li>
+            <a href="<?= $url ?>"><?= $template ?></a>
+        </li>
+    <?php endforeach; ?>
+</ul>

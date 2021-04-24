@@ -1,0 +1,20 @@
+<?php
+    /**
+     * File error.phtml
+     * since: 01.07.2020
+     * author: alexej@kisselev.de
+     */
+
+    /** @var \Laminas\Form\Element $element */
+    $element = $this->element;
+    if (!($element instanceof \Laminas\Form\ElementInterface)) return;
+
+    $messages = $element->getMessages();
+    if (empty($messages)) return;
+    ?>
+<div class="invalid-feedback">
+    <?php foreach ($messages as $message) {
+        echo sprintf("%s<br>", $message);
+    }
+    ?>
+</div>

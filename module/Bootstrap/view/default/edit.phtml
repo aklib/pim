@@ -1,0 +1,100 @@
+<?php
+
+/**
+ *
+ * edit.phtml
+ *
+ * @since 26.05.2017
+ * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+ */
+
+$form = $this->form;
+if (empty($form)) {
+    echo 'no form';
+    return;
+}
+if ($this->isAjax()) {
+    echo $this->form()->openTag($form);
+} else {
+    //  open form tag in layout
+    $this->layout()->setVariable('form', $form);
+}
+// handle ajax modal request
+$wrap = $this->isAjax() ? 'col-12' : 'col-lg-6 col-md-8 col-sm-12';
+$prefix = $this->isAjax() ? 'modal' : 'card';
+$class = $this->isAjax() ? '' : 'card';
+
+$elements = $form->getElements();
+if (is_array($elements)) : ?>
+    <div class="<?= $wrap ?>"<?php echo devhelp(__FILE__); ?>>
+        <?php echo $this->render('messenger/flash'); ?>
+        <!--begin::Card-->
+
+        <div class="<?= $class ?> gutter-b">
+            <!--begin::Card header-->
+            <div class="<?= $prefix ?>-header flex-wrap py-3">
+                <h5 class="card-label">
+                    <?php
+                    if (!empty($this->title)) {
+                        echo $this->translate($this->title);
+                    }
+                    if (!empty($this->subtitle)) {
+                        echo '<span class="d-block text-muted pt-2 font-size-sm">' . $this->translate($this->subtitle) . '</span>';
+                    }
+                    ?>
+                </h5>
+                <?php if ($this->isAjax()): ?>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <i aria-hidden="true" class="icon-xl la la-close"></i>
+                    </button>
+                <?php endif; ?>
+            </div>
+            <!--end::Card header-->
+
+            <!--begin::Card body-->
+            <div class="<?= $prefix ?>-body">
+                <!-- BEGIN DATA -->
+                <?php
+                echo $this->data
+                ?>
+                <!-- END DATA-->
+            </div>
+            <!--end::Card body-->
+            <!--begin::Card footer-->
+            <div class="<?= $prefix ?>-footer">
+                <div class="offset-xl-3">
+                    <?php
+                    $label = $this->translate(empty($this->buttonOK) ? 'Save' : $this->buttonOK);
+                    if ($this->isAjax()): ?>
+                        <!-- modal-->
+                        <button type="button" class="btn btn-primary btn-lg mr-2" data-dismiss="modal"><?= $this->translate('Close') ?></button>
+                        <button type="submit" class="btn btn-light btn-hover-success btn-lg mr-2" name="submit" value="back">
+                            <?php echo $this->translate($label) ?>
+                        </button>
+                    <?php endif;
+                    if (!$this->isAjax()): ?>
+                        <button type="submit" class="btn btn-light btn-hover-success btn-lg mr-2" name="submit" value="save">
+                            <?php echo $this->translate($label) ?>
+                        </button>
+
+                        <?php
+                        $hideBack = $this->hideBack ?? false;
+                        if ($hideBack !== true):
+                            ?>
+                            <button class="btn btn-light btn-hover-primary btn-lg mr-2" type="submit" name="submit" value="back">
+                                <?= $this->translate('Save and back to list') ?>
+                            </button>
+                        <?php endif;
+                    endif; ?>
+
+                </div>
+                <!--begin::footer-->
+            </div>
+        </div>
+        <!--end::Card-->
+    </div>
+<?php
+endif;
+if ($this->isAjax()) {
+    echo $this->form()->closeTag();
+}

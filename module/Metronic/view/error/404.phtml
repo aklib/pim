@@ -1,0 +1,16 @@
+<!--begin::Main-->
+<div class="col-lg-12">
+    <!--begin::Error-->
+        <h1 class="font-weight-boldest text-dark-75 mt-15" style="font-size: 10rem">404</h1>
+        <p class="font-size-h3 text-muted font-weight-normal">OOPS! Something went wrong here</p>
+        <?php
+            echo $this->render('error/button-back');
+            use FlorianWolters\Component\Core\StringUtils;
+
+            if (StringUtils::startsWith($_SERVER['HTTP_HOST'], '192.')) {
+                echo $this->render('error/exception-stack-trace');
+            }
+        ?>
+    <!--end::Error-->
+</div>
+<!--end::Main-->

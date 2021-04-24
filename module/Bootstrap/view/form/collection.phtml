@@ -1,0 +1,24 @@
+<?php
+/**
+ *
+ * collection.phtml
+ *
+ * @since 26.05.2017
+ * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+ */
+$collection = $this->element;
+$class = !empty($collection->getOption('extended')['wrap']['class']) ? $collection->getOption('extended')['wrap']['class'] : 'form-group';
+
+//if(empty($extended['wrap']['class'])){
+//    $extended['wrap']['class'] = 'col-md-offset-4 col-md-4';
+//}
+?>
+<div class="<?= $class ?>"<?php echo devhelp(__FILE__); ?>>
+    <fieldset name="creative123">
+        <?php
+        foreach ($collection as $el) {
+            echo $this->formRow($el);
+        }
+        ?>
+    </fieldset>
+</div>

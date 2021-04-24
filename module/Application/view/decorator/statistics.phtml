@@ -1,0 +1,36 @@
+<?php
+    /**
+     * File statistics.phtml
+     *
+     * since: 01.10.2020
+     * author: alexej@kisselev.de
+     */
+
+    use Application\Custom\Column;
+    use Application\Custom\ResultRow;
+
+$resultRow = $this->resultRow;
+if (!$resultRow instanceof ResultRow) {
+    return;
+}
+$columns = $resultRow->getColumns();
+if (!is_array($columns)) {
+    return;
+}
+?>
+<table class="table table-sm table-striped mb-0"<?php echo devhelp(__FILE__) ?>>
+    <tr>
+        <?php
+        /** @var Column $column */
+        foreach ($columns as $column):?>
+            <th class="py-2 text-nowrap" style="font-size: 0.9rem"><?= $this->translate($column->getLabel()) ?></th>
+        <?php endforeach; ?>
+    </tr>
+    <tr>
+        <?php
+        /** @var Column $column */
+            foreach ($columns as $column):?>
+                <td class="py-2 text-center"><?= $this->translate($column->getValue()) ?></td>
+            <?php endforeach; ?>
+    </tr>
+</table>

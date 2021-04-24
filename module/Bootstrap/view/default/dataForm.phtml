@@ -1,0 +1,41 @@
+<?php
+/**
+ * File dataForm.phtml
+ *
+ * since: 27.08.2020
+ * author: alexej@kisselev.de
+ */
+
+use Application\ServiceManager\Interfaces\Constant;
+use Laminas\Form\Element;
+use Laminas\Form\ElementInterface;
+use Laminas\Form\FieldsetInterface;
+
+$form = $this->form;
+if (empty($form)) {
+    echo __FILE__ . ' :no form';
+    return;
+}
+$groups = [];
+/** @var Element $element */
+foreach ($form as $element) {
+    $group = $element->hasAttribute(Constant::HTML_ATTRIBUTE_GROUP) ? $element->getAttribute(Constant::HTML_ATTRIBUTE_GROUP) : null;
+    if (!empty($group)) {
+        $groups[$group][] = $element;
+    } else {
+        $groups[] = $element;
+    }
+}
+
+
+foreach ($groups as $group => $element) {
+    if ($element instanceof FieldsetInterface) {
+        echo $this->formCollection($element, true);
+    } elseif ($element instanceof ElementInterface) {
+        echo $this->formRow($element);
+    } elseif (count($element) === 1) {
+        echo $this->formRow($element[0]);
+    } else {
+        echo $this->render('form/element-group', ['name' => $group, 'elements' => $element]);
+    }
+}

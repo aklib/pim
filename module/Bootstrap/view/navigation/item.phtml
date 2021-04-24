@@ -1,0 +1,95 @@
+<?php /** @noinspection DuplicatedCode */
+
+    /**
+     * Navigation item (child)
+     *
+     * item.phtml
+     *
+     * @since 19.05.2020
+     * @author alex
+     * @encoding UTF-8
+     */
+
+    use Laminas\Navigation\Page\Mvc;
+
+    $page = $this->page;
+    /** @var Mvc $page */
+    $visible = $page->get('visible');
+    if ($visible === false) {
+        return;
+    }
+
+    if ($page->get('hidden') === true) {
+        return;
+    }
+
+    $resource = $page->getController();
+    $privilege = $page->getAction();
+    if (!$this->acl()->isAllowed(null, $resource, $privilege)) {
+        return;
+    }
+
+    $hasChildren = $page->hasPages();
+    $children = [];
+    if ($hasChildren) {
+        $children = [];
+        /** @var Mvc $child */
+        foreach ($page->getPages() as $child) {
+            if ($child->get('visible') === false || $child->get('hidden') === true) {
+                continue;
+            }
+            dump('tit');
+            if ($this->acl()->isAllowed(null, $child->getController(), $child->getAction())) {
+                $children[] = $child;
+            }
+        }
+    }
+
+    if ($hasChildren && empty($children)) {
+        // the user has no allowed pages
+        return;
+    }
+
+    $count = 0;
+    $liClass = 'menu-item';
+    if ($hasChildren) {
+        $liClass .= ' menu-item-submenu menu-item-rel';
+    }
+    if ($page->isActive()) {
+        $liClass .= ' menu-item-active';
+    }
+    $count++;
+?>
+
+<!-- BEGIN SUBMENU DROPDOWN -->
+<?php
+    $toggle = $this->depth === 1 ? 'click' : 'hover';
+?>
+<li class="<?php echo $liClass; ?>" data-menu-toggle="<?php echo $toggle; ?>" aria-haspopup="true"<?php echo devhelp(__FILE__) ?>>
+    <a href="<?= $hasChildren ? 'javascript:;' : $page->getHref() ?>" class="menu-link<?= $hasChildren ? ' menu-toggle' : '' ?>">
+        <?php
+            // ICON
+            if ($page->get('icon') !== null):
+                ?>
+                <i class="menu-icon <?php echo $page->get('icon'); ?>"></i>
+            <?php endif; ?>
+
+        <!--TEXT-->
+        <span class="menu-text"><?php echo $this->translate($page->getLabel()); ?></span>
+        <!--ARROW-->
+        <?php if ($hasChildren): ?>
+            <i class="menu-arrow"></i>
+        <?php endif; ?>
+    </a>
+    <?php if ($hasChildren): ?>
+        <div class="menu-submenu menu-submenu-classic menu-submenu-left">
+            <ul class="menu-subnav">
+                <?php
+                    foreach ($children as $child) {
+                        echo $this->partial('navigation/item', ['page' => $child, 'depth' => $this->depth + 1]);
+                    }
+                ?>
+            </ul>
+        </div>
+    <?php endif; ?>
+</li>

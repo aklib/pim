@@ -1,0 +1,42 @@
+<?php
+/**
+ *
+ * user-list.phtml
+ *
+ * @since 16.05.2017
+ * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+ */
+$controller = $this->params('controller');
+$action = $this->params('action');
+$route = $this->params('route');
+$url = $this->history()->getLastUrlFor('list');
+
+$hideBack = $this->hideBack ?? false;
+
+if (empty($url)) {
+    $id = $this->params('id');
+    $url = $this->url($route, ['controller' => $controller, 'action' => 'list']);
+}
+echo $this->partial('toolbar/button-back', ['url' => $url]);
+
+if ($action !== 'create' && $this->acl()->isAllowed(null, $controller, 'create')) {
+    $urlC = $this->url($route, ['controller' => $controller, 'action' => 'create']);
+}
+
+?>
+<div class="d-flex align-items-center"<?php echo devhelp(__FILE__); ?>>
+    <button type="submit" class="btn btn-light btn-hover-primary btn-sm mr-2" name="submit" value="save">
+        <i class="la la-save"></i>&nbsp;<?php echo $this->translate('Save') ?>
+    </button>
+    <?php if ($hideBack !== true): ?>
+        <button class="btn btn-light btn-hover-primary btn-sm mr-2" type="submit" name="submit" value="back">
+            <i class="la la-save"></i>&nbsp;<?php echo $this->translate('Save and back to list') ?>
+        </button>
+    <?php endif; ?>
+    <?php if (!empty($urlC)): ?>
+        <a class="btn btn-light-primary btn-hover-light-success btn-sm mr-2" href="<?= $urlC ?>">
+            <i class="la la-plus"></i>&nbsp;<?php echo $this->translate('Create') ?>
+        </a>
+    <?php endif; ?>
+</div>
+

@@ -1,0 +1,117 @@
+<?php
+/**
+ * File attribute-options.phtml
+ *
+ * since: 15.10.2020
+ * author: alexej@kisselev.de
+ */
+
+/** @var Fieldset $container */
+
+use Laminas\Form\Element\Text;
+use Laminas\Form\Fieldset;
+
+$container = $this->element;
+
+if ($container === null) {
+    return;
+}
+$fieldSets = $container->getElements();
+$count = 0;
+?>
+<div id="attributeOptionActions" class="row form-group"<?php echo devhelp(__FILE__) ?>>
+    <div class="col-lg-3 text-lg-right text-md-left text-sm-left">
+        <button id="attributeOptionAddButton" type="button" class="btn btn-primary btn-clean btn-icon">
+            <i class="la la-plus"></i>
+        </button>
+    </div>
+</div>
+<div id="draggableZone"<?php echo devhelp(__FILE__) ?>>
+    <?php
+    /** @var Fieldset $fieldset */
+    foreach ($fieldSets as $element) {
+        if ($element instanceof Text) {
+            $id = $element->getAttribute('id');
+            if ($id !== 'attributeOptionCloneMe') {
+                $count++;
+                $element->setlabel('Option ' . $count);
+            } else {
+                $element->setlabel('New Option');
+            }
+        }
+        echo $this->formRow($element);
+
+    }
+    ?>
+</div>
+
+<script>
+    <?php
+
+    $this->headScript()->appendFile('/assets/plugins/custom/draggable/draggable.bundle.js');
+    $this->inlineScript()->captureStart();
+    ?>
+    $(document).ready(function () {
+        // 1. init drag&drop
+        const container = document.querySelector('#draggableZone');
+        $(container).find('.form-group').addClass('draggable');
+        new Sortable.default(container, {
+            draggable: '.draggable',
+            handle: '.draggable .draggable-handle'
+        });
+        // 2. init element-source for new options
+        const $cloneMe = $('#attributeOptionCloneMe').parents('.form-group');
+        const $actionContainer = $('#attributeOptionActions');
+        const $draggableZone = $('#draggableZone');
+        // ============== FUNCTIONS ==============
+        const deleteFunction = function (e) {
+            e.preventDefault();
+            let $this = $(this);
+            let $input = $this.parent().siblings('input');
+            let idName = $input.attr('name').replace('name', 'id');
+            let $idInput = $draggableZone.find('input[name="' + idName + '"]');
+
+            if ($this.data('action') === 'restore') {
+                $input.prop('disabled', false);
+                $idInput.prop('disabled', false);
+                $this.find('i').removeClass('la-refresh').addClass('la-times');
+                $this.data('action', 'delete');
+            } else {
+                $input.attr('disabled', true);
+                $idInput.prop('disabled', true);
+                $this.find('i').removeClass('la-times').addClass('la-refresh');
+                $this.data('action', 'restore');
+            }
+        }
+        const validateFunction = function () {
+            $(this).attr('value', this.value);
+            /*console.log(this.value);
+            console.log($draggableZone.find('input[value="'+this.value+'"]').length);*/
+            if ($draggableZone.find('[value="' + this.value + '"]').length > 1) {
+                this.setCustomValidity('The option "' + this.value + '" exists already');
+            } else {
+                this.setCustomValidity('');
+            }
+        }
+        $draggableZone.find('input.form-control').on('change', validateFunction);
+        const $deleteButtons = $draggableZone.find('.input-group-append button');
+        $deleteButtons.on('click', deleteFunction);
+        // eo functions
+
+        // 3. move source to actions block
+        $cloneMe.hide().find('input').attr('disabled', true);
+        $actionContainer.append($cloneMe);
+
+        // 4. init action buttons
+        const $addButton = $actionContainer.find('#attributeOptionAddButton');
+        $addButton.on('click', function () {
+            let $newOption = $cloneMe.clone(true);
+            $newOption.prependTo($draggableZone);
+            $newOption.show('fast').find('input').attr('disabled', false);
+        });
+    });
+    <?php
+    $this->inlineScript()->captureEnd();
+    ?>
+</script>
+

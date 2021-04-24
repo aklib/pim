@@ -1,0 +1,168 @@
+<?php
+
+    /**
+     * checkboxes.phtml
+     *
+     * @since 24.06.2017
+     * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+     */
+
+    /*
+     * View vars array(
+      'title' => string|null,
+      'emptyMessage' => string|null default: 'Nothing found',
+      'fieldName' => string|null default 'item',
+      'values' => array of items ids
+      )
+     */
+
+    $readonly = $this->readonly ? ' disabled' : '';
+    $lg = 1;
+    $md = 2;
+
+    if (!empty($countColumns)) {
+        $lg = round(12 / $countColumns);
+        $md = round(12 / ($countColumns - 2));
+    }
+?>
+<div<?php echo devhelp(__FILE__); ?>>
+    <?php
+        if (empty($items)):
+        $message = empty($emptyMessage) ? 'Nothing found' : $emptyMessage;
+    ?>
+    <h4 class="col-md-4" style="margin-top: 0"><?= $this->translate($message) ?></h4>
+</div>
+<?php
+    return;
+    endif;
+    //    $class = $this->isAjax() ? "col-lg-6 col-md-12 col-sm-12 col-xs-12" : "col-lg-$lg col-md-$md col-sm-4 col-xs-6";
+    $class = "col-lg-$lg col-md-$md col-sm-4 col-xs-6";
+    $suffix = uniqid('', false);
+    $containerActionId = "checkboxListAction_$suffix";
+    $containerInputId = "checkboxListInput$suffix";
+
+    $fieldName = empty($fieldName) ? 'item' : $fieldName;
+    $values = (array)$this->values;
+
+    if (!empty($headline)):
+        ?>
+        <div class="row">
+            <h3 class="col-md-4" style="margin-top: 0"><?= $headline ?></h3>
+        </div>
+    <?php endif; ?>
+
+<!--======================= BUTTONS =======================-->
+<div id="<?= $containerActionId ?>" class="row">
+    <div class="col-md-10">
+        <?php if (empty($readonly)): ?>
+            <div class="btn-group">
+                <a class="btn btn-sm btn-success" href="#" data-action="select">
+                    <i class="fa check-square-o"></i> <?= $this->translate('select all') ?>
+                </a>
+            </div>
+
+            <div class="btn-group">
+                <a class="btn btn-sm btn-default" href="#" data-action="deselect">
+                    <i class="fa fa-square-o"></i> <?= $this->translate('deselect all') ?>
+                </a>
+            </div>
+        <?php endif; ?>
+        <div class="btn-group" style="margin-left: 40px">
+            <a class="btn btn-sm btn-info" href="#" data-action="all">
+                <?= $this->translate('show all'); ?>
+            </a>
+        </div>
+        <div class="btn-group">
+            <a class="btn btn-sm btn-default" href="#" data-action="checked">
+                <i class="fa fa-check-square-o"></i> <?= $this->translate('show checked') ?>
+            </a>
+        </div>
+
+        <div class="btn-group">
+            <a class="btn btn-sm btn-default" href="#" data-action="unchecked">
+                <i class="fa fa-square-o"></i> <?= $this->translate('show unchecked') ?>
+            </a>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <span class="text-muted">
+            Selected <?php echo count($values) ?> from <?php echo count($items) ?>
+        </span>
+    </div>
+</div>
+
+<!--======================= CHECKBOXES =======================-->
+<div id="<?= $containerInputId ?>" class="row row-eq-height mt-6">
+    <?php
+        $method = empty($labelMethod) ? 'getName' : $labelMethod; // $labelMethod must be implement in decorator
+        foreach ($items as $i => $item) :
+            $id = is_object($item) ? (string)$this->decorate($item, 'getId') : $i;
+            if (empty($id)) {
+                continue;
+            }
+            $label = is_object($item) ? $this->decorate($item, $method) : $item;
+            $checked = in_array($id, $values, false) ? ' checked' : '';
+            ?>
+            <div class="checkbox-inline mb-2 <?= $class ?>">
+                <label class="checkbox">
+                    <input name="<?= $fieldName ?>[]" value="<?php echo $id ?>" type="checkbox"<?= $checked ?><?= $readonly ?>>
+                    <span></span><?php echo $label; ?>
+                </label>
+            </div>
+        <?php endforeach; ?>
+</div>
+
+<script>
+    <?php
+    if (!$this->isAjax()) {
+        $this->inlineScript()->captureStart();
+    }
+    //19.08.2017 Cologne, ak:  DON'T TOUCH THE JAVASCRIPT - BUG IS FIXED
+    ?>
+    jQuery(document).ready(function () {
+        var allCheckboxes = $('#<?= $containerInputId ?> input[type=checkbox]');
+
+        $('#<?= $containerActionId ?> a').on('click', function (e) {
+            e.preventDefault();
+            $a = $(this);
+            var action = $a.data('action');
+            switch (action) {
+                case 'select':
+                    allCheckboxes.prop('checked', true);
+                    allCheckboxes.parent().show();
+                    break;
+                case 'deselect':
+                    allCheckboxes.prop('checked', false);
+                    allCheckboxes.parent().show();
+                    break;
+                case 'all':
+                    allCheckboxes.parent().show();
+                    break;
+                case 'checked':
+                    allCheckboxes.each(function (i, input) {
+                        if ($(input).prop('checked')) {
+                            $(input).parent().show();
+                        } else {
+                            $(input).parent().hide();
+                        }
+                    });
+                    break;
+                case 'unchecked':
+                    allCheckboxes.each(function (i, input) {
+                        if ($(input).prop('checked')) {
+                            $(input).parent().hide();
+                        } else {
+                            $(input).parent().show();
+                        }
+                    });
+                    break;
+            }
+        });
+        /* ==== eo click ==== */
+    });
+    <?php
+    if (!$this->isAjax()) {
+        $this->inlineScript()->captureEnd();
+    }
+    ?>
+</script>

@@ -1,0 +1,47 @@
+<?php
+    /**
+     *
+     * error.phtml
+     *
+     * @since 28.05.2017
+     * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+     */
+?>
+
+<div class="modal-dialog modal-dialog-centered">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <i aria-hidden="true" class="ki ki-close"></i>
+    </button>
+    <div class="modal-content">
+        <div class="modal-header bg-danger">
+            <h5 class="modal-title text-white"><?= $this->translate('Application error') ?></h5>
+            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                <i aria-hidden="true" class="icon-xl la la-close text-white"></i>
+            </button>
+
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <?php
+                        $ms = (array)$this->messages;
+                        if (!empty($ms)) {
+                            foreach ($ms as $message):
+                                $m = $this->translate($message);
+                                ?>
+                                <p><?= $this->escapeHtml($m) ?></p>
+                            <?php
+                            endforeach;
+                        } else {
+                            echo $this->translate('While processing your request a programm error has occured, please try it again');
+                        }
+                    ?>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal"><?= $this->translate('Close') ?></button>
+        </div>
+    </div>
+</div>
+

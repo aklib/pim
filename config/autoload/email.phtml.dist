@@ -1,0 +1,23 @@
+<?php
+/**
+ * File email.phtml
+ *
+ * since: 18.01.2021
+ * author: alexej@kisselev.de
+ */
+return [
+   'module_options' => [
+               'email'           => [
+                   'from_email'        => 'alexej@kisselev.de',
+                   'from_name'         => 'roiPush',
+                   'smtp'              => [
+                       'active'   => true,
+                       'host'     => '',
+                       'port'     => '', // it could be empty
+                       'username' => '',
+                       'password' => '',
+                       'ssl'      => '' // it could be empty
+                   ],
+               ],
+           ],
+];

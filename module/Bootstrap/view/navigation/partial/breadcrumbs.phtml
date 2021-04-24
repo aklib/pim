@@ -1,0 +1,59 @@
+<?php
+    /**
+     * Description
+     *
+     * breadcrumbs.phtml
+     *
+     * @since 26.05.2016
+     * @author alex
+     * @encoding UTF-8
+     */
+
+    use Laminas\Navigation\Page\Mvc;
+
+    $pages = $this->pages;
+    if (!is_array($pages)) {
+        return;
+    }
+    $language = $this->params('language');
+    $homeURL = $this->url('default', ['language' => $language]);
+    if (count($pages) === 0):?>
+        <!--start::Item-->
+        <ul class="breadcrumb breadcrumb-transparent breadcrumb-dot font-weight-bold p-0 my-2 font-size-sm"<?php echo devhelp(__FILE__) ?>>
+            <li class="breadcrumb-item">
+                <a href="<?php echo $homeURL; ?>" class="text-muted">
+                    <?php echo $this->translate('Dashboard'); ?>
+                </a>
+            </li>
+        </ul>
+        <!--end::Item-->
+        <?php
+        return;
+    endif;
+?>
+
+<!--strat::Breadcrumb-->
+<ul class="breadcrumb breadcrumb-transparent breadcrumb-dot font-weight-bold p-0 my-2 font-size-sm">
+    <?php
+        $numItems = count($pages);
+        $i = 0;
+        /** @var Mvc $page */
+        foreach ($pages as $i => $page):
+            $hasHref = $page->getController() !== null;
+            ?>
+            <li class="breadcrumb-item">
+                <?php
+                    if (++$i === $numItems || !$hasHref) {
+                        echo $page->getLabel();
+                    }
+                    else {?>
+                        <a href="<?= $page->getHref() ?>" class="text-muted">
+                            <?php echo $page->getLabel(); ?>
+                        </a>
+                    <?php } ?>
+            </li>
+        <?php
+        endforeach;
+    ?>
+</ul>
+<!--end::Breadcrumb-->

@@ -1,0 +1,142 @@
+<?php
+    /**
+     * File file.phtml
+     *
+     * since: 16.09.2020
+     * author: alexej@kisselev.de
+     */
+
+    use Doctrine\Common\Collections\Collection;
+    use Laminas\Form\Element;
+    use Product\Entity\ProductCreativeFile;
+    use Product\ModuleOptions;
+
+    /** @var ModuleOptions $moduleOptions */
+    //$moduleOptions = $this->getServiceManager()->get(ModuleOptions::class);
+
+    $dim1 = ['192x192'];
+    $dim2 = ['360x240', '720x480'];
+
+    $html1 = str_replace('creativeFiles', 'creativeFiles][create1', $this->html);
+    $html2 = str_replace('creativeFiles', 'creativeFiles][create2', $this->html);
+
+    /** @var ProductCreativeFile $file1 */
+    $file1 = null;
+    /** @var ProductCreativeFile $file2 */
+    $file2 = null;
+    /** @var Element $element */
+    $element = $this->element;
+    /** @var Collection $collection */
+    $collection = $element->getOption('value');
+    if(is_iterable($collection)) {
+        /** @var ProductCreativeFile $file */
+        foreach ($collection as $file) {
+            $dim = $file->getWidth() . 'x' . $file->getHeight();
+            if (in_array($dim, $dim1)) {
+                $html1 = str_replace('create1', $file->getId(), $html1);
+                $file1 = $file;
+            } elseif (in_array($dim, $dim2)) {
+                $html2 = str_replace('create2', $file->getId(), $html2);
+                $file2 = $file;
+            }
+        }
+    }
+?>
+<div class="d-inline-block">
+    <div id="creativeFile1" class="image-input image-input-outline">
+        <?php
+            $style = '';
+            if ($file1 instanceof ProductCreativeFile) {
+                $style = ' style="background-image: url(' . $file1->getUri() . ')"';
+            }
+        ?>
+        <div class="image-input-wrapper"<?= $style ?>></div>
+
+        <label class="btn btn-xs btn-icon btn-circle btn-white btn-shadow" data-action="change" data-toggle="tooltip" title="Change">
+            <i class="fa fa-pen icon-sm text-muted"></i>
+            <?= $html1 ?>
+        </label>
+        <?php $visible = $file1 instanceof ProductCreativeFile ?>
+        <span class="btn btn-xs btn-icon btn-circle btn-white btn-shadow" data-action="cancel" data-toggle="tooltip" title="Cancel">
+        <i class="ki ki-bold-close icon-xs text-muted"></i>
+    </span>
+    </div>
+    <span class="form-text text-muted text-center">192x192</span>
+</div>
+<div class="d-inline-block">
+    <div id="creativeFile2" class="image-input image-input-outline ml-6">
+        <?php
+            $style = '';
+            if ($file2 instanceof ProductCreativeFile) {
+                $style = ';background-image: url(' . $file2->getUri() . ')';
+            }
+        ?>
+        <div class="image-input-wrapper" style="width: 180px<?= $style ?>"></div>
+
+        <label class="btn btn-xs btn-icon btn-circle btn-white btn-shadow" data-action="change" data-toggle="tooltip" title="Change">
+            <i class="fa fa-pen icon-sm text-muted"></i>
+            <?= $html2 ?>
+        </label>
+        <?php $visible = $file2 instanceof ProductCreativeFile ?>
+        <span class="btn btn-xs btn-icon btn-circle btn-white btn-shadow" data-action="cancel" data-toggle="tooltip" title="Cancel">
+        <i class="ki ki-bold-close icon-xs text-muted"></i>
+    </span>
+    </div>
+    <span class="form-text text-muted text-center">360x240 or 720x480</span>
+</div>
+
+
+<!--suppress JSUnresolvedFunction, JSUnresolvedVariable, JSValidateTypes -->
+<script>
+    <?php
+    $this->inlineScript()->captureStart();
+    ?>
+
+    $(document).ready(function () {
+        new KTImageInput('creativeFile1').on('change', function (input) {
+            let reader = new FileReader();
+            reader.onload = function (e) {
+                let img = new Image();
+                img.onload = function () {
+                    if (img.width !== 192 || img.height !== 192) {
+                        swal.fire({
+                            icon: 'error',
+                            title: 'The image must be 192x192!',
+                            text: img.width + 'x' + img.height + ' given.',
+                            confirmButtonText: 'Ok, cancel the upload'
+                        }).then(() => {
+                            input.cancel.click();
+                        });
+                    }
+                };
+                img.src = e.target.result;
+            }
+            reader.readAsDataURL(input.input.files[0]);
+        });
+
+        new KTImageInput('creativeFile2').on('change', function (input2) {
+            let reader = new FileReader();
+            reader.onload = function (e) {
+                let img = new Image();
+                img.onload = function () {
+                    let isValid = (img.width === 360 && img.height === 240) || (img.width === 720 && img.height === 480)
+                    if (!isValid) {
+                        swal.fire({
+                            icon: 'error',
+                            title: 'The image must be 360x240 or 720x480!',
+                            text: img.width + 'x' + img.height + ' given',
+                            confirmButtonText: 'Ok, cancel the upload'
+                        }).then(() => {
+                            input2.cancel.click();
+                        });
+                    }
+                };
+                img.src = e.target.result;
+            }
+            reader.readAsDataURL(input2.input.files[0]);
+        });
+    });
+    <?php
+    $this->inlineScript()->captureEnd();
+    ?>
+</script>

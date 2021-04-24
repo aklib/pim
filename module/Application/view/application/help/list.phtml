@@ -1,0 +1,133 @@
+<div class="col-md-7">
+    <h3>Roi-PUSH Parameters Description </h3>
+
+    <br>
+
+    <table>
+        <thead>
+        <tr>
+            <th style="width: 20%">System Macros</th>
+            <th style="width: 65%">Definition</th>
+            <th style="width: 15%">Required</th>
+        </tr>
+        </thead>
+        <tr>
+            <td>&token=[your_token]</td>
+            <td>Token</td>
+            <td>YES</td>
+        </tr>
+        <tr>
+            <td>&feed=[your_feed]</td>
+            <td>Feed, for mainstream && adult</td>
+            <td>YES</td>
+        </tr>
+        <tr>
+            <td>&type=[traffic_type]</td>
+            <td>Types: banner, native, popunder, push, redirect</td>
+            <td>YES</td>
+        </tr>
+        <tr>
+            <td>&subid=[subid]</td>
+            <td>subid can contain alphanumeric characters (case insensitive) and following punctuation: ".", "_" and "-"</td>
+            <td>YES</td>
+        </tr>
+        <tr>
+            <td>&ip=[user_ip]</td>
+            <td>IP address of the visitor</td>
+            <td>YES</td>
+        </tr>
+        <tr>
+            <td>&ua=[user_agent]</td>
+            <td>UserAgent of the visitor</td>
+            <td>YES</td>
+        </tr>
+        <tr>
+            <td>&url=[url]</td>
+            <td>URL(encoded), where current feed will be displayed.</td>
+            <td>YES</td>
+        </tr>
+        <tr>
+            <td>&image_size=[image_size]</td>
+            <td>Main image size in format xxxXxxx.</td>
+            <td>No</td>
+        </tr>
+        <tr>
+            <td>&image_required=[0/1]</td>
+            <td>If set to 1, it allows only ads with image 150x150 to be returned. Default value: 0.</td>
+            <td>No</td>
+        </tr>
+        <tr>
+            <td>&lang=[lang]</td>
+            <td>Language of the visitor. provide with Accept-Language format</td>
+            <td>No</td>
+        </tr>
+    </table>
+    <br>
+    <br>
+
+
+    <h3>Data</h3>
+
+    <h5>Response</h5>
+
+    <pre>
+    {
+    "result" : [,
+        "listing"   : [
+                title       : String,
+                url         : string,
+                description : String,
+                site        : String,
+                bid         : Float,
+                pixel       : String,
+                image       : Float,
+            ]
+        ]
+    }
+    </pre>
+
+    <h5>Error</h5>
+
+    <pre>
+    {
+    "result" : [,
+        "error"   : String
+        ]
+    }
+    </pre>
+
+
+    <div class="panel-body">
+        <div class="form-group">
+            <label class="col-md-3 control-label" for="text-input"><h5>Example:</h5></label>
+            <div class="col-md-9">
+                <textarea readonly="" class="form-control" rows="6">https://mobileadtransfer.com/mainstream?feed=1&token=xxxxxxxxxx&type=push&subid=xxxxx&ip=107.77.209.188&ua=Mozilla/5.0%20(Linux;%20Android%206.0leWebKit/537.36%20(KHTML,%20like%20Gecko)%20Chrome/86.0.4240.75%20Mobile%20Safari/537.36&url=roidynamic.com&image_size=192x192&image_required=1&lang=en-us</textarea>
+                <span class="help-block"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <div class="form-group">
+            <label class="col-md-3 control-label" for="text-input"><h5>Response:</h5></label>
+            <div class="col-md-9">
+                <textarea readonly="" class="form-control" rows="14">
+{
+    "result":{
+        "listing":{
+            "title":"Some Titel",
+            "url":"https://roidynamic.com/",
+            "description":"This Is An Response Example",
+            "site":"roidynamic.com",
+            "bid":0.005,
+            "pixel":"https://mobileadtransfer.com/nurl?unique_id=16526005015f89969aee90a5.96498558",
+            "image":"https://mobileadtransfer.com/files/creative/somecreative.jpeg"
+            }
+        }
+    }
+                    </textarea>
+                    <span class="help-block"></span>
+            </div>
+        </div>
+    </div>
+</div>

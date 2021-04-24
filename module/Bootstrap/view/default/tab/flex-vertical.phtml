@@ -1,0 +1,68 @@
+<?php
+    /**
+     * File tab-flex.phtml
+     * since: 27.07.2020
+     * author: alexej@kisselev.de
+     */
+
+    use Application\View\Model\Tab\TabContainer;
+    use Application\View\Model\Tab\TabItem;
+
+    /** @var TabContainer $container */
+    $container = $this->container;
+
+
+    if (empty($container) || !$container->hasTabs()) {
+        echo 'empty tab container';
+        return;
+    }
+    $this->headScript()->appendFile('/js/tab.handler.js');
+    $tabs = $container->getTabs();
+    $count = 0;
+?>
+
+
+<div class="row">
+    <div class="col-3">
+        <ul class="nav tabs-left flex-column <?= $container->getClass() ?>" role="tablist"
+            aria-orientation="vertical">
+            <?php
+                /** @var TabItem $tab */
+                foreach ($tabs as $tab):
+                    $attr = $tab->getAttributes();
+                    if (!empty($attr)) {
+                        $attribute = [];
+                        foreach ($attr as $name => $value) {
+                            $attribute[] = sprintf('%s="%s"', $name, $this->escapeHtmlAttr($value));
+                        }
+                        $attributes = ' ' . implode(' ', $attribute);
+                    }
+                    else {
+                        $attributes = '';
+                    }
+                    ?>
+                    <li class="nav-item">
+                        <a class="nav-link align-items-start <?php echo $tab->getClass() ?>"
+                           data-toggle="tab" data-toggle="pill" role="tablist" href="#<?php echo $tab->getHref() ?>"<?= $attributes ?>>
+                            <?= $this->translate($tab->getTitle()) ?>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
+        </ul>
+    </div>
+    <div class="col-9">
+        <div class="tab-content">
+            <?php
+                $count = 0;
+                foreach ($tabs as $tab):
+                    ?>
+                    <div id="<?php echo $tab->getHref() ?>" class="tab-pane fade <?php echo $tab->getClass() ?>">
+                        <?php
+                            echo $this->render($tab->getContent());
+                        ?>
+                    </div>
+                <?php endforeach; ?>
+
+        </div>
+    </div>
+</div>

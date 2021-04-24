@@ -1,0 +1,33 @@
+<?php
+    /**
+     * element-with-addon.phtml
+     *
+     * @since 22.08.2018
+     * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+     */
+    $element = $this->element;
+    $extended = $element->getOption('extended');
+    $hasAddOn = !empty($extended['prepend']) || !empty($extended['append']);
+
+    if ($hasAddOn):
+        ?>
+        <div class="input-group"<?= devhelp(__FILE__) ?>>
+    <?php
+    endif;
+    if (!empty($extended['prepend'])): ?>
+        <div class="input-group-prepend">
+            <?= $extended['prepend'] ?>
+        </div>
+    <?php endif;
+
+    echo $this->formElement($element);;
+
+    if (!empty($extended['append'])): ?>
+        <div class="input-group-append">
+            <?= $extended['append'] ?>
+        </div>
+    <?php endif;
+
+    if ($hasAddOn){
+        echo '</div>';
+    }

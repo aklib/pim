@@ -1,0 +1,77 @@
+/*
+    Created on : 25.12.2019, 19:30:14
+    Author     : alex
+*/
+
+/*
+layout
+ */
+
+.dataTables_wrapper .dataTables_paginate .pagination .page-item.active > .page-link {
+    z-index: 1;
+}
+
+.aside-minimize:not(.aside-minimize-hover) .brand .brand-logo {
+    display: none;
+}
+
+.laminas-toolbar-detail pre {
+    color: white;
+}
+
+/*
+aside
+ */
+
+.aside-minimize:not(.aside-minimize-hover) .aside-menu .menu-nav > .menu-item > .form-group {
+    display: none;
+}
+
+.aside-menu .menu-nav > .menu-item > .menu-link.form-group {
+    padding: 0.75rem 0 0.55rem 0;
+}
+
+/*
+content
+ */
+.table-actions {
+    white-space: nowrap;
+    width: 0;
+}
+
+.required label:not(.checkbox)::after {
+    content: "*";
+    color: #dc3545;
+}
+
+.dataTables_wrapper .dataTable #column_id,
+.dataTables_wrapper .dataTable #column_sortOrder {
+    padding: 1rem 2rem;
+    width: 0;
+}
+table td.column-status {
+   text-align: center;
+}
+a.nav-link.alert.alert-custom {
+    padding: 0.75rem 1.5rem;
+}
+
+.column-bidClickedGrossImport, .column-bidClickedImport, .column-revenueImport, .column-costsImport, .column-profitImport, .column-totalHitsImport {
+    background-color: #F3F6F9;
+}
+
+td[data-type="integer"], td[data-type="float"] {
+   text-align: right;
+}
+.table-with-total-row tbody > tr:last-child {
+
+}
+.table-with-total-row tbody > tr:last-child td {
+    background-color: white !important;
+    font-weight: bold;
+    border-color: black;
+    border-top-width: 2px;
+}
+
+
+

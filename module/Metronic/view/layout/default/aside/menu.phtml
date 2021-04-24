@@ -1,0 +1,21 @@
+<?php
+/**
+ * menu.phtml
+ * 
+ * @since 22.12.2019
+ * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+ */
+?>
+
+<!--begin::Aside Menu-->
+<div class="aside-menu-wrapper flex-column-fluid" id="kt_aside_menu_wrapper"<?php echo devhelp(__FILE__) ?>>
+
+    <!--begin::Menu Container-->
+    <div id="kt_aside_menu" class="aside-menu my-4 " data-menu-vertical="1" data-menu-scroll="1" data-menu-dropdown-timeout="500">
+        <?php echo $this->content ?>
+    </div>
+
+    <!--end::Menu Container-->
+</div>
+<!-- end:: Aside Menu -->
+

@@ -1,0 +1,48 @@
+<?php
+/**
+ *
+ * list.phtml
+ *
+ * @since 30.05.2016
+ * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+ */
+$controller = $this->params('controller');
+?>
+
+
+<div class="col-lg-12 px-0"<?php devhelp(__FILE__) ?>>
+    <?php echo $this->render('messenger/flash'); ?>
+    <div class="card card-custom">
+        <div class="card-body">
+            <!--                <form id="listform" action="--><?php //echo $this->url('default/admin', ['action' => 'edit', 'controller' => $controller]); ?><!--" method="post" class="form">-->
+            <?php echo $this->tabs; ?>
+            <!--                </form>-->
+        </div>
+    </div>
+</div>
+
+
+<script>
+    <?php
+    $this->headScript()->appendFile('/js/table.row.details.js');
+    $this->inlineScript()->captureStart();
+    ?>
+    $(document).ready(function () {
+        $('th a.checker').click(function () {
+            let $this = $(this);
+            let action = $this.data('action');
+            let target = $this.data('target');
+            let $checkboxes = $this.parents('table').find('td.' + target).find('input');
+            // alert($checkboxes.length);
+            if (action === 'check') {
+                $checkboxes.prop('checked', true);
+            } else {
+                $checkboxes.prop('checked', false);
+            }
+        });
+    });
+    <?php
+    $this->inlineScript()->captureEnd();
+    ?>
+</script>
+

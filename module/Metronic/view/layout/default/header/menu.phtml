@@ -1,0 +1,30 @@
+<?php
+/**
+ * menu.phtml
+ * 
+ * @since 22.12.2019
+ * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+ */
+?>
+<!--begin::Header Menu Wrapper-->
+<div class="header-menu-wrapper header-menu-wrapper-left" id="kt_header_menu_wrapper"<?php echo devhelp(__FILE__) ?>>
+        <?php 
+        if (empty($this->aside)) {
+            echo $this->render('layout/header/brand'); 
+        }
+        ?> 
+    <!--begin::Header Menu-->
+    <div id="kt_header_menu" class="header-menu header-menu-mobile header-menu-layout-default"> 
+        <!--begin::Header Nav-->
+        <?php
+        echo $this->navigation('default')->menu()->setUseAcl(false)->setOnlyActiveBranch(false)->setPartial([
+            'navigation/default',
+            'navigation',
+        ]);
+        ?>
+        <!--end::Header Nav-->
+    </div>
+    <!--end::Header Menu-->
+</div>
+
+<!--end::Header Menu Wrapper-->

@@ -1,0 +1,66 @@
+<?php
+/**
+ *
+ * modal-list.phtml
+ *
+ * @since 14.06.2017
+ * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+ */
+$comments = (array)$this->comments;
+
+?>
+<div id="commentContent">
+    <?php
+    echo $this->form($form);
+    ?>
+    <div class="blog-page blog-content-2">
+        <div class="blog-single-content bordered blog-container">
+            <div class="blog-comments">
+                <h4 class="blog-comments-title"><?= $this->translate('Comments'); ?> (<?= count($comments); ?>)</h4>
+                <div class="c-comment-list">
+                    <?php
+                    foreach ($comments as $comment):
+                        $dateTime = $comment->getCreated();
+                        $date = is_object($dateTime) ? $dateTime->format('Y-m-d H:i:s') : 'not defined';
+                        $userObj = $comment->getUser();
+                        $user = is_object($userObj) ? $userObj->getDisplayName() : 'unknown';
+                        $email = 'alexej.kisselev@googlemail.com'; //$userObj->getEmail();
+                        ?>
+                        <div class="media">
+                            <div class="media-left">
+                                <?php
+                                $settings = [];
+                                $attr = [
+                                    'class' => 'img-circle media-object'
+                                ];
+                                echo $this->gravatar($email, $settings, $attr);
+                                ?>
+                            </div>
+                            <div class="media-body">
+                                <h4 class="media-heading">
+                                    <a href="#"><?= $user ?></a> <?= $this->translate('on'); ?> <span class="c-date"><?= $date ?></span>
+                                </h4>
+                                <?= $comment->getComment(); ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<?php
+$request = $this->getHelperPluginManager()->getServiceLocator()->get('request');
+//restore functionality for per ajax received button
+if ($request->isXmlHttpRequest()):
+    ?>
+    <script>
+        $('#commentform').ajaxForm(
+                function (data, status) {
+                    $('#commentContent').replaceWith(data);
+                }
+        );
+    </script>
+
+    <?php
+ endif;

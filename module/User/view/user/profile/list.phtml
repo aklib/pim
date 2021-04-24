@@ -1,0 +1,71 @@
+<?php
+/**
+ * File list.phtml
+ *
+ * since: 03.08.2020
+ * author: alexej@kisselev.de
+ */
+
+use Application\View\Manager\ViewManager;
+use Psr\Container\ContainerInterface;
+
+
+/**@var ContainerInterface $sm */
+$sm = $this->getServiceManager();
+/** @var ViewManager $manager */
+$manager = $sm->get(ViewManager::class);
+$columns = $manager->getColumns();
+$user = $this->identity();
+
+// actions
+
+
+?>
+
+<div class="card col-3"<?php echo devhelp(__FILE__) ?>>
+    <div class="card-header card-transparent">
+        <h2><?= $this->decorate($user, 'getDisplayName') ?></h2>
+    </div>
+    <div class="card-body">
+
+        <?php foreach ($columns as $column): ?>
+            <div class="row">
+                <p class="col-5 text-right"><?= $this->translate($column['label']) ?>:</p>
+                <p class="col-7">
+                    <?php
+                    $method = 'get' . ucfirst($column['name']);
+                    echo $this->decorate($user, $method);
+
+                    ?>
+                </p>
+                <?php //dump($column) ?>
+
+            </div>
+        <?php endforeach; ?>
+        <div class="card-footer text-right">
+            <?php
+            $url = $this->url('default/profile', ['controller' => 'profile', 'action' => 'edit'])
+            ?>
+            <a class="btn btn-primary" href="<?= $url ?>"><?= $this->translate('edit') ?> &raquo;</a>
+        </div>
+    </div>
+</div>
+<div class="col-3">
+    <div class="card-footer text-center">
+        <?php
+        $this->navigation('default')->setUseAcl(false)->menu()->setPartial([
+            'navigation/button-block',
+            'navigation',
+        ]);
+        echo $this->navigation('default')->setUseAcl(false)->menu()->renderPartialWithParams(
+            [
+                'scope' => 'user',
+            ]
+        );
+        // actions!!!
+        ?>
+
+    </div>
+</div>
+
+

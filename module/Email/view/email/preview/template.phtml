@@ -1,0 +1,14 @@
+<?php
+
+/**
+ * template.phtml
+ *
+ * @since 11.01.2021
+ * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+ */
+echo $this->render('email/layout');
+?>
+<br>
+<br>
+
+<a class="btn" href="<?= $this->url('default/admin', ['action' => 'list', 'controller' => 'preview']) ?>"><< <?= $this->translate('Back to list') ?></a><br>

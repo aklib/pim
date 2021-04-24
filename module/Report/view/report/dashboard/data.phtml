@@ -1,0 +1,33 @@
+<?php
+/**
+ * File data.phtml
+ *
+ * since: 26.09.2020
+ * author: alexej@kisselev.de
+ */
+
+use Application\View\Manager\ViewManager;
+use Psr\Container\ContainerInterface;
+
+/* @var ContainerInterface $sm */
+$sm = $this->getServiceManager();
+/** @var ViewManager $manager */
+$manager = $sm->get(ViewManager::class);
+$allColumns = $manager->getColumns();
+$summaries = [];
+$other = [];
+foreach ($allColumns as $column) {
+    if ($column['tab'] === 'summary') {
+        $summaries[$column['name']] = $column;
+    } else {
+        $other[$column['name']] = $column;
+    }
+}
+
+echo $this->render('report/partial/summary', ['columns' => $summaries, 'data' => $this->data]);
+
+foreach ($other as $column) {
+    echo $this->render('report/partial/' . $column['tab'], ['column' => $column, 'data' => $this->data]);
+}
+
+

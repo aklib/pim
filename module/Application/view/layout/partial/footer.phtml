@@ -1,0 +1,21 @@
+<?php /**
+ *
+ * footer.phtml
+ *
+ * @since 01.04.2018
+ * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+ */
+
+    use Application\ModuleOptions;
+    use Psr\Container\ContainerInterface;
+
+    /** @var ContainerInterface $sm */
+    $sm = $this->serviceManager();
+    /** @var ModuleOptions $options */
+    $options = $sm->get(ModuleOptions::class);
+    if (empty($options)) {
+        return;
+    }
+
+?>
+<div class="copyright"<?php echo devhelp(__FILE__) ?>>&copy; <?= $options->getName() ?></div>

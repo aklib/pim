@@ -1,24 +1,19 @@
-# Composer files
-composer.phar
-vendor/
-
-# Local configs
-config/autoload/*.local.php
-
-# Binary gettext files
-*.mo
-
-# Data
-data/logs/
-data/cache/
-data/sessions/
-data/tmp/
-temp/
-
-#Doctrine 2
-data/DoctrineORMModule/Proxy/
-data/DoctrineORMModule/cache/
-
-# Legacy ZF1
-demos/
-extras/documentation
+/vendor/
+/data/
+/config/autoload/dev_ak.php
+/.idea/**
+/public/scrips/config.local.php
+.DS_Store
+module/.DS_Store
+module/User/.DS_Store
+module/User/src/.DS_Store
+public/.DS_Store
+/config/autoload/dev_ak.local.php
+/config/autoload/dev_ap.local.php
+/generated/
+/config/autoload/dev_ak.localhost.php
+/docker/elasticsearch/esdata/
+/docker/mysql/mysql/
+/docker/redis/redisdata/
+/composer.phar
+/module/Elastic/config/ip.md

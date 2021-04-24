@@ -1,0 +1,30 @@
+<?php
+/**
+ * Navigation container
+ *
+ * default.phtml
+ *
+ * @since 19.12.2018
+ * @author alex
+ * @encoding UTF-8
+ */
+
+    use Laminas\Navigation\Page\Mvc;
+
+?>
+
+<ul class="menu-nav"<?php echo devhelp(__FILE__) ?>>
+    <?php
+    $count = 0;
+        /** @var Mvc $page */
+        foreach($this->container as $page){
+        //  custom property 'scope' for other navigation menus eg. user. For default not set.
+        if($page->get('scope') !== null){
+            continue;
+        }
+        echo $this->partial('navigation/item', ['page' => $page,'depth' => 1]);
+    }
+    ?>
+</ul>
+
+

@@ -1,0 +1,19 @@
+<?php
+/**
+ * base-mobile.phtml
+ *
+ * @since 22.12.2019
+ * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+ */
+?>
+<!--begin::Header-->
+<!--header-fixed-->
+<div id="kt_header" class="header header-fixed"<?php echo devhelp(__FILE__) ?>>
+    <!--begin::Container-->
+    <div class="container-fluid  d-flex align-items-stretch justify-content-between">
+        <?php echo $this->render('layout/header/menu'); ?>
+        <?php echo $this->render('layout/header/topbar'); ?>
+    </div>
+    <!--end::Container-->
+</div>
+<!--end::Header-->

@@ -1,0 +1,76 @@
+<?php
+/**
+ *
+ * row.phtml
+ *
+ * @since 25.05.2017
+ * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+ */
+
+use Application\ServiceManager\Interfaces\Constant;
+use Laminas\Form\Element;
+
+
+/* @var $element Element */
+$element = $this->element;
+$extended = $element->getOption('extended');
+$hasAddOn = !empty($extended['prepend']) || !empty($extended['append']);
+$formGroupClass = '';
+$err = $element->getMessages();
+if (!empty($err)) {
+    $formGroupClass .= ' validated';
+    $element->setAttribute('class', $element->getAttribute('class') . ' is-invalid');
+}
+if ($element->getAttribute('required')) {
+    $formGroupClass .= ' required';
+}
+
+$label = $element->getLabel();
+
+switch ($element->getAttribute('type')) {
+    case 'hidden':
+        echo $this->formHidden($element);
+        return;
+}
+$isGroup = $element->hasAttribute(Constant::HTML_ATTRIBUTE_GROUP);
+if (!$isGroup):
+    ?>
+    <div class="form-group row<?= $formGroupClass ?>"<?php echo devhelp(__FILE__); ?>>
+
+<?php
+endif;
+if (!empty($label)) {
+    $element->setLabel($this->translate($label));
+    switch ($element->getAttribute('type')) {
+        case 'button':
+            break;
+        default:
+            echo $this->formLabel($element);
+    }
+}
+?>
+    <div class="<?= $extended['wrap']['class'] ?>">
+        <?php
+        if (!$hasAddOn) {
+            echo $this->formElement($element);
+        } else {
+            echo $this->render('form/element-with-addon');
+        }
+        if (!empty($extended['info']) && empty($err)): ?>
+            <span class="form-text text-muted"><?= $this->translate($extended['info']) ?></span>
+        <?php endif;
+        if ($err): ?>
+            <ul class="invalid-feedback">
+                <?php foreach ($err as $k => $message): ?>
+                    <li><span class="invalid-feedback"><?= $this->translate($message) ?></span></li>
+                <?php endforeach; ?>
+            </ul>
+        <?php endif; ?>
+    </div>
+<?php
+if (!$isGroup):
+    ?>
+    </div>
+<?php
+endif;
+

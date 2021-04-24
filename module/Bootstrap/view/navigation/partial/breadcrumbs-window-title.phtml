@@ -1,0 +1,14 @@
+<?php
+    /**
+     * File breadcrumbs-window-title.phtml
+     * since: 07.07.2020
+     * author: alexej@kisselev.de
+     */
+
+    if (!is_array($this->pages) || count($this->pages) === 0) {
+        $this->headTitle($this->translate('Home'));
+        return;
+    }
+    $pages = $this->pages;// copy the array to avoid a php notice
+    $currentPage = array_pop($pages);
+    $this->headTitle($this->translate($currentPage->getLabel()));

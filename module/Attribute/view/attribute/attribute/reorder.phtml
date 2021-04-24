@@ -1,0 +1,70 @@
+<?php
+    /**
+     * File order.phtml
+     *
+     * since: 23.08.2020
+     * author: alexej@kisselev.de
+     */
+
+    use Attribute\Entity\Attribute;
+
+    $attributes = $this->attributes;
+    $orderedByContext = [];
+    /** @var Attribute $attribute */
+    foreach ($attributes as $attribute) {
+        $orderedByContext[$attribute->getContext()->getContext()][] = $attribute;
+    }
+    $contexts = array_keys($orderedByContext);
+
+    /** @var Attribute $attribute */
+?>
+<div class="col-lg-12"<?php echo devhelp(__FILE__) ?>>
+    <?php echo $this->render('messenger/flash') ?>
+</div>
+<?php
+    foreach ($contexts as $context): ?>
+        <div class="col-lg-12 mb-4"<?php echo devhelp(__FILE__) ?>>
+            <div class="card">
+                <div class="card-header flex-wrap py-3">
+                    <h5 class="card-label"><?= $this->translate("context-$context") ?></h5>
+                </div>
+                <div class="card-body draggable-zone-<?= $context ?>">
+                    <?php
+                        foreach ($orderedByContext[$context] as $attribute):?>
+                            <button class="btn btn-success btn-outline-success mr-1 mb-2 draggable<?= $attribute->isRequired() ? ' required' : '' ?>">
+                               <label class="mb-0"><?= $this->translate($attribute->getLabel()) ?></label>
+                                <i class="la la-exchange-alt ml-4 draggable-handle"></i>
+                                <input type="hidden" name="attribute[]" value="<?= $attribute->getId() ?>">
+                            </button>
+                        <?php endforeach;
+                    ?>
+                </div>
+            </div>
+        </div>
+    <?php endforeach; ?>
+
+
+<!--<script>-->
+
+
+    <?php
+
+    //$this->headLink()->appendStylesheet('/assets/plugins/custom/draggable/draggable.bundle.css');
+
+    $this->headScript()->appendFile('/assets/plugins/custom/draggable/draggable.bundle.js');
+    $this->inlineScript()->captureStart();
+    ?>
+    $(document).ready(function () {
+        var container = null;
+        <?php foreach ($contexts as $context):?>
+        container = document.querySelector('.draggable-zone-<?= $context ?>');
+        new Sortable.default(container, {
+            draggable: '.draggable',
+            handle: '.draggable .draggable-handle'
+        });
+        <?php endforeach; ?>
+    });
+    <?php
+    $this->inlineScript()->captureEnd();
+    ?>
+<!--</script>-->

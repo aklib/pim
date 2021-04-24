@@ -1,0 +1,68 @@
+<?php
+    /**
+     * File exception-stack-trace.phtml
+     * since: 08.07.2020
+     * author: alexej@kisselev.de
+     */
+    if (empty($this->display_exceptions)) {
+        return;
+    }
+    if (!($this->exception instanceof Throwable)) {
+        return;
+    }
+?>
+
+
+<div class="card card-custom gutter-b">
+    <div class="card-body">
+        <h3><?= get_class($this->exception) ?></h3>
+        <dl>
+            <dt>File:</dt>
+            <dd>
+                <pre><?= $this->exception->getFile() ?>:<?= $this->exception->getLine() ?></pre>
+            </dd>
+            <dt>Message:</dt>
+            <dd>
+                <pre><?= $this->escapeHtml($this->exception->getMessage()) ?></pre>
+            </dd>
+            <dt>Stack trace:</dt>
+            <dd>
+                <pre><?= $this->escapeHtml($this->exception->getTraceAsString()) ?></pre>
+            </dd>
+        </dl>
+
+        <?php if ($ex = $this->exception->getPrevious()) : ?>
+            <hr/>
+
+            <h2>Previous exceptions:</h2>
+            <ul class="list-unstyled">
+            <?php $icount = 0 ?>
+            <?php while ($ex) : ?>
+                <li>
+                    <h3><?= get_class($ex) ?></h3>
+                    <dl>
+                        <dt>File:</dt>
+                        <dd>
+                            <pre><?= $ex->getFile() ?>:<?= $ex->getLine() ?></pre>
+                        </dd>
+                        <dt>Message:</dt>
+                        <dd>
+                            <pre><?= $this->escapeHtml($ex->getMessage()) ?></pre>
+                        </dd>
+                        <dt>Stack trace:</dt>
+                        <dd>
+                            <pre><?= $this->escapeHtml($ex->getTraceAsString()) ?></pre>
+                        </dd>
+                    </dl>
+                </li>
+                <?php
+                $ex = $ex->getPrevious();
+                if (++$icount >= 50) {
+                    echo '<li>There may be more exceptions, but we do not have enough memory to process it.</li>';
+                    break;
+                }
+                ?>
+            <?php endwhile ?>
+            </ul><?php endif; ?>
+    </div>
+</div>

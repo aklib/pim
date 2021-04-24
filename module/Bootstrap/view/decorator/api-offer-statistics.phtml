@@ -1,0 +1,80 @@
+<?php
+/**
+ * api-offer-statistics.phtml
+ * 
+ * @since 07.08.2018
+ * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+ */
+$statistics = $this->statistics;
+if (count($statistics) === 0) {
+    return;
+}
+$clicks = 0;
+$conversions = 0;
+$revenue = 0;
+$costs = 0;
+$profit = 0;
+$clickRate = 0;
+
+$showPublisher = is_numeric($this->params('publisher'));
+$isPublisher = $this->acl()->isPublisher() || $showPublisher;
+
+$updated = $statistics->get(0)->getChanged();
+
+/* @var $data \Application\Entity\ApiOfferStatistic */
+foreach($statistics as $data) {
+    if($updated < $data->getChanged()){
+        $updated = $data->getChanged();
+    }
+    $clicks += $data->getClicks();
+    $conversions += $data->getConversions();
+    if ($isPublisher) {
+        $revenue += $data->getCosts();
+        continue;
+    } else {
+        $revenue += $data->getRevenue();
+    }
+
+    $costs += $data->getCosts();
+    $profit += $data->getProfit();
+    $clickRate += $data->getClickRate();
+//    echo $data->getDate()->format('Y-m-d H:i:s');
+//    echo '<br>';
+}
+//var_dump(count($statistics));
+
+$clickRateAverage = round($clickRate / count($statistics), 2);
+?>
+<div class="table-statistics-wrap"<?php echo devhelp(__FILE__); ?>>
+    <table class="table table-striped table-bordered table-header-fixed no-footer table-statistics">
+        <thead>
+            <tr>
+                <th><?= $this->translate('Clicks') ?></th>
+                <th><?= $this->translate('Conversions') ?></th>
+                <th><?= $this->translate('Revenue') ?></th>
+                <?php if (!$isPublisher): ?>
+                    <th><?= $this->translate('Costs') ?></th>
+                    <th><?= $this->translate('Profit') ?></th>
+                    <th class="tooltips" title="Click Rate"><?= $this->translate('CR') ?></th>
+                <?php endif; ?>
+
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><?= $clicks ?></td>
+                <td><?= $conversions ?></td>
+                <td><?= $revenue ?></td>
+                <?php if (!$isPublisher): ?>
+                    <td><?= $costs ?></td>
+                    <td><?= $profit ?></td>
+                    <td><?= $clickRateAverage ?></td>
+                <?php endif; ?>
+            </tr>
+        </tbody>
+    </table>
+    <?php if ($updated instanceof \DateTime): ?>
+        <span class="statistics-update-info"><?= $this->translate('Last update at') . ' ' . $updated->format('Y-m-d H:i:s'); ?></span>
+    <?php endif; ?>
+</div>
+

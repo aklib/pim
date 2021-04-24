@@ -1,0 +1,200 @@
+<?php
+
+/**
+ *
+ * calender.phtml
+ *
+ * @since 30.08.2017
+ * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+ */
+use Application\Util\DateTimeUtils;
+
+$filters = $this->params('filters');
+$controller = $this->params('__CONTROLLER__');
+$params = $this->params();
+$columns = array_keys($this->viewConfig()->getColumns()); //$this->params('columns');
+//var_dump($this->viewConfig()->getColumns());
+?>
+<div class="form-group col-md-3" id="dashboard-report-range"<?php echo devhelp(__FILE__); ?>>
+    <label class="control-label" style="text-align: right">Report date range</label>
+    <div class="input-group">
+        <input name="filters[daterange]" class="form-control" data-container="body" data-placement="bottom" placeholder="Change report date range" type="text">
+        <span class="input-group-addon">
+            <i class="fa fa-calendar"></i>
+        </span>
+    </div>
+</div>
+<?php
+if (is_array($publisherList)):
+    $current = (int) $filters['publisher'];
+    ?>
+    <div class="form-group col-md-3" id="dashboard-report-publisher"<?php echo devhelp(__FILE__); ?>>
+        <label class="control-label" style="text-align: right">Publisher</label>
+        <div class="input-group">
+            <select class="form-control" name="filters[publisher]">
+                <?php foreach($publisherList as $id => $name): ?>
+                    <option value="<?= $id ?>"<?= $id == $current ? ' selected' : '' ?>><?= $name ?></option>
+                <?php endforeach; ?>
+            </select>
+            <span class="input-group-addon">
+                <i class="fa fa-users"></i>
+            </span>
+        </div>
+    </div>
+    <?php
+endif;
+if ($controller == 'report'):
+    $source = $params['source'];
+    $colName = $params['source'] == 'conversion' ? 'Conversion count sort' : 'Click count sort';
+
+    $size = empty($params['aff_size']) ? $defaultSize : $params['aff_size'];
+    $order = $params['aff_order'];
+    ?>
+    <div class="form-group col-md-3" id="dashboard-report-source"<?php echo devhelp(__FILE__); ?>>
+        <label class="control-label" style="text-align: right">Source</label>
+        <div class="input-group">
+            <select class="form-control" name="source">
+                <option value="">Clicks</option>
+                <option value="conversion"<?= $source == 'conversion' ? ' selected' : '' ?>>Conversions</option>
+            </select>
+            <span class="input-group-addon">
+                <i class="fa fa-folder"></i>
+            </span>
+        </div>
+    </div>
+
+    <div class="form-group col-md-3" id="dashboard-report-settings"<?php echo devhelp(__FILE__); ?>>
+        <div class="mt-repeater form-horizontal">
+            <div class="mt-repeater-input">
+                <label class="control-label" style="text-align: right">Last column part size</label>
+                <select class="form-control" name="aff_size">
+                    <option value="">default</option>
+                    <option value="10"<?= $size == '10' ? ' selected' : '' ?>>10</option>
+                    <option value="20"<?= $size == '20' ? ' selected' : '' ?>>20</option>
+                    <option value="50"<?= $size == '50' ? ' selected' : '' ?>>50</option>
+                    <option value="100"<?= $size == '100' ? ' selected' : '' ?>>100</option>
+                    <option value="200"<?= $size == '200' ? ' selected' : '' ?>>200</option>
+                    <option value="500"<?= $size == '500' ? ' selected' : '' ?>>500</option>
+                    <option value="1000"<?= $size == '1000' ? ' selected' : '' ?>>1000</option>
+                    <option value="2000"<?= $size == '2000' ? ' selected' : '' ?>>2000</option>
+                    <option value="5000"<?= $size == '5000' ? ' selected' : '' ?>>5000</option>
+                </select>
+            </div>
+            <div class="mt-repeater-input">
+                <label class="control-label"><?= $colName ?></label>
+                <select class="form-control" name="aff_order">
+                    <option value="">desc</option>
+                    <option value="asc"<?= $order == 'asc' ? ' selected' : '' ?>>asc</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="form-group col-md-3" id="dashboard-report-export-excel"<?php echo devhelp(__FILE__); ?>>
+        <label class="control-label">&nbsp;</label> <br>
+        <a href="<?php echo $this->urlx(['action' => 'excel']) ?>" class="btn btn-default">
+            <i class="fa fa-file-excel-o"></i> <?= $this->translate('Export to Excel') ?>
+        </a>
+    </div>
+<?php endif; ?>
+<span hidden="">
+    <button type="submit" id="submitbutton" class="btn btn-default" value="search"></button>
+</span>
+<div class="clearfix spacer"></div>
+<hr>
+<?php
+$from = DateTimeUtils::getFromRangeFrom($filters['daterange']);
+$to = DateTimeUtils::getFromRangeTo($filters['daterange']);
+
+$now = new \DateTime();
+$day = (int) $now->format('d') - 1;
+
+if ($day > 6) {
+    $day = 6;
+} elseif ($day === 1) {
+    //  we have an 'Yesterday'
+    $day = 0;
+}
+?>
+
+<script>
+<?php
+$this->inlineScript()->captureStart();
+?>
+    $(document).ready(function () {
+    var $container = $('#dashboard-report-range');
+    var $picker = $('#dashboard-report-range input');
+    var start = '<? echo $from ?>';
+    var end = '<? echo $to ?>';
+    $picker.daterangepicker({
+    timePicker24Hour: true,
+            startDate: start,
+            endDate: end,
+            ranges: {
+            'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
+<?php if ($day !== 0): ?>
+                'Last <?= $day + 1 ?> Days': [moment().subtract('days', <?= $day ?>), moment()],
+<?php endif; ?>
+            //'Last 7 Days': [moment().subtract('days', 6), moment()],
+            //'Last 30 Days': [moment().subtract('days', 29), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+            },
+            locale: {
+            language: "de-DE",
+                    format: "<?php echo DateTimeUtils::DATEFORMAT_JS ?>",
+                    timePicker24Hour: true,
+                    separator: " - ",
+                    applyLabel: "Apply",
+                    cancelLabel: "Cancel",
+                    fromLabel: "From",
+                    toLabel: "To",
+                    customRangeLabel: "Custom",
+                    daysOfWeek: [
+                            "Su",
+                            "Mo",
+                            "Tu",
+                            "We",
+                            "Th",
+                            "Fr",
+                            "Sa"
+                    ],
+                    monthNames: [
+                            "January",
+                            "February",
+                            "March",
+                            "April",
+                            "May",
+                            "June",
+                            "July",
+                            "August",
+                            "September",
+                            "October",
+                            "November",
+                            "December"
+                    ],
+                    firstDay: 1
+            },
+            opens: (App.isRTL() ? 'left' : 'right')
+    }, function (start, end, label) {
+            if ($picker.attr('data-display-range') !== '0') {
+        //                $container.find('div.display-range').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+            }
+        });
+        if ($picker.attr('data-display-range') !== '0') {
+    //           $container.find('div.display-range').html(moment().subtract('days', 1).format('MMMM D, YYYY hh:mm') + ' - ' + moment().format('MMMM D, YYYY hh:mm'));
+        }
+        $picker.show();
+        $container.on('apply.daterangepicker', function (ev, picker) {
+                $("#submitbutton").click();
+                App.blockUI('body');
+            });
+        $('#dashboard-report-publisher select, #dashboard-report-source select, #dashboard-report-settings select').on('change', function (e) {
+        $("#submitbutton").click();
+            App.blockUI('body');
+        });
+    });
+<?php
+$this->inlineScript()->captureEnd();
+?>
+</script>

@@ -1,0 +1,140 @@
+<?php
+/**
+ * File filters.phtml
+ *
+ * since: 24.09.2020
+ * author: alexej@kisselev.de
+ */
+
+use Application\Utils\DateTimeUtils;
+use Application\View\Manager\ViewManager;
+use Psr\Container\ContainerInterface;
+
+/* @var ContainerInterface $sm */
+$sm = $this->getServiceManager();
+/** @var ViewManager $manager */
+$manager = $sm->get(ViewManager::class);
+
+$urlParams = $manager->getUrlParams();
+date_default_timezone_set('Europe/London');
+
+$timezoneCurrent = isset($urlParams['timezone']) ? urldecode($urlParams['timezone']) : date_default_timezone_get();
+$timezoneList = DateTimeUtils::getTimezoneList();
+
+?>
+
+<div class="form-group row mb-0" id="top-filter"<?php echo devhelp(__FILE__); ?>>
+    <div class="input-group col-lg-3" id="filter-timezone">
+        <select type='text' name="timezone" class="form-control select2" readonly placeholder="<?= $this->translate('Select time zone') ?>">
+            <?php foreach ($timezoneList as $key => $timezone): ?>
+                <option value="<?= urlencode($key) ?>" <?= $timezoneCurrent !== $key ? '' : 'selected' ?>><?= $this->escapeHtml($timezone) ?></option>
+            <?php endforeach; ?>
+        </select>
+        <!--<div class="input-group-append">
+            <span class="input-group-text"><i class="la la-clock-o"></i></span>
+        </div>-->
+    </div>
+
+    <div class="input-group col-lg-3" id="filter-date-range">
+        <!--            <label class="form-label">Contact Number:</label>-->
+        <input type='text' name="daterange" class="form-control" readonly placeholder="<?= $this->translate('Select date range') ?>"/>
+        <div class="input-group-append">
+            <span class="input-group-text"><i class="la la-calendar-check-o"></i></span>
+        </div>
+    </div>
+</div>
+
+<?php
+
+$daterange = $urlParams['daterange'] ?? null;
+
+$from = DateTimeUtils::getFromRangeFrom($daterange);
+$to = DateTimeUtils::getFromRangeTo($daterange);
+
+$now = new DateTime();
+$day = (int)$now->format('d') - 1;
+
+if ($day > 6) {
+    $day = 6;
+} elseif ($day === 1) {
+    //  we have an 'Yesterday'
+    $day = 0;
+}
+$this->headScript()->appendFile('/js/plugins/moment-timezone-with-data-2012-2022.min.js');
+?>
+
+<script>
+    <?php
+    $this->inlineScript()->captureStart();
+    ?>
+    $(document).ready(function () {
+        const $container = $('#filter-date-range');
+        const $picker = $('#filter-date-range input');
+        const start = '<?php echo $from ?>';
+        const end = '<?php echo $to ?>';
+        $picker.daterangepicker({
+            timePicker24Hour: true,
+            startDate: start,
+            endDate: end,
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
+                <?php if ($day !== 0): ?>
+                'Last <?= $day + 1 ?> Days': [moment().subtract('days', <?= $day ?>), moment()],
+                <?php endif; ?>
+                //'Last 7 Days': [moment().subtract('days', 6), moment()],
+                //'Last 30 Days': [moment().subtract('days', 29), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+            },
+            locale: {
+                language: "de-DE",
+                format: "<?php echo DateTimeUtils::DATEFORMAT_JS ?>",
+                timePicker24Hour: true,
+                separator: " - ",
+                applyLabel: "Apply",
+                cancelLabel: "Cancel",
+                fromLabel: "From",
+                toLabel: "To",
+                customRangeLabel: "Custom",
+                daysOfWeek: [
+                    "Su",
+                    "Mo",
+                    "Tu",
+                    "We",
+                    "Th",
+                    "Fr",
+                    "Sa"
+                ],
+                monthNames: [
+                    "January",
+                    "February",
+                    "March",
+                    "April",
+                    "May",
+                    "June",
+                    "July",
+                    "August",
+                    "September",
+                    "October",
+                    "November",
+                    "December"
+                ],
+                firstDay: 1
+            },
+            opens: (KTUtil.isRTL() ? 'left' : 'right')
+        });
+
+        $picker.show();
+
+        $('#top-filter input, #top-filter select').on('change', function (e) {
+            $("#listform").submit();
+            KTApp.block('body');
+        });
+    });
+    <?php
+    $this->inlineScript()->captureEnd();
+    ?>
+</script>
+
+

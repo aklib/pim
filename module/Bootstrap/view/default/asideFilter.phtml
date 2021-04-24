@@ -1,0 +1,63 @@
+<?php
+/**
+ * File asideFilter.phtml
+ *
+ * since: 02.09.2020
+ * author: alexej@kisselev.de
+ */
+
+use Application\View\Manager\ViewManager;
+use Laminas\Form\Element;
+use Psr\Container\ContainerInterface;
+
+$form = $this->form;
+if (empty($form)) {
+    echo __FILE__ . ' :no form';
+    return;
+}
+/* @var ContainerInterface $sm */
+$sm = $this->getServiceManager();
+/** @var ViewManager $manager */
+$manager = $sm->get(ViewManager::class);
+?>
+<!--begin::Aside Menu-->
+<div class="aside-menu-wrapper flex-column-fluid" id="kt_aside_menu_wrapper"<?php echo devhelp(__FILE__) ?>>
+    <!--begin::Menu Container-->
+    <div id="kt_aside_menu" class="aside-menu my-4 " data-menu-vertical="1" data-menu-scroll="1" data-menu-dropdown-timeout="500">
+        <!--begin::Menu Nav-->
+        <ul class="menu-nav">
+            <li class="text-right menu-link form-group">
+                <button type="submit" class="btn btn-sm btn-clean btn-icon" title="<?php echo $this->translate('Apply Filters') ?>">
+                    <i class="la la-check"></i>
+                </button>
+                <a href="<?php echo $this->urlx($manager->getClearFilterQuery()); ?>"
+                   title="<?php echo $this->translate('Clear all filters') ?>"
+                   class="btn btn-sm btn-clean btn-icon">
+                    <i class="la la-eraser"></i>
+                </a>
+            </li>
+            <?php
+            /** @var Element $element */
+            foreach ($form as $element) :?>
+                <li class="menu-item">
+                    <!--                    <i class="menu-icon ki ki-bold-more-hor icon-md hidden"></i>-->
+                    <div class="menu-link form-group mb-0">
+                        <label class="col-lg-4 text-right">
+                            <?php
+                            if ($element->getLabel()) {
+                                echo $this->translate($element->getLabel());
+                            } else {
+                                echo $this->translate($element->getName());
+                            }
+                            ?>
+                        </label>
+                        <div class="col-lg-8">
+                            <?= $this->formElement($element) ?>
+                        </div>
+                    </div>
+                </li>
+            <?php endforeach;
+            ?>
+        </ul>
+    </div>
+</div>

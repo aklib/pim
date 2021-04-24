@@ -1,0 +1,53 @@
+<?php
+/**
+ * File summary.phtml
+ *
+ * since: 26.09.2020
+ * author: alexej@kisselev.de
+ */
+
+use Elastica\ResultSet;
+
+$columns = $this->columns;
+if (empty($columns)) {
+    return;
+}
+/** @var ResultSet $resultSet */
+$resultSet = $this->data;
+?>
+<div class="col-lg-12 px-0"<?php echo devhelp(__FILE__); ?>>
+    <div class="row row-eq-height col-12 pr-0 pl-0 mx-0"<?php echo devhelp(__FILE__); ?>>
+        <?php
+        $count = 1;
+        foreach ($columns as $column):
+            $colName = $column['name'];
+            $margin = $count++ !== count($columns) ? 'mr-8' : '';
+            $colClass = $column['class'] ?? '';
+            ?>
+            <div class="bg-white rounded d-flex flex-fill align-items-center border justify-content-start justify-content-between position-relative p-7 mr-6 mb-6 max-w-300px min-w-300px shadow <?= $colClass ?>">
+                <!--begin::Shape-->
+                <div class="position-absolute opacity-50 top-0 right-0">
+                    <!--                    <i class="icon-3x text-dark-50 flaticon-diagram"></i>-->
+                </div>
+                <!--end::Shape-->
+                <div class="font-weight-light font-size-h5"><?= $this->translate($column['label'] ?? $colName) ?></div>
+                <div class="text-right d-flex flex-column">
+                    <?php
+                    $method = empty($column['method']) ? 'get' . ucfirst($colName) : $column['method'];
+                    $value = $this->decorate($resultSet, $method, $colName);
+                    if (is_object($value)) {
+                        $value = 'instance of ' . get_class($value);
+                        continue;
+                    }
+                    ?>
+                    <span class="font-weight-bold font-size-h3 line-height-sm"> <?= $value ?></span>
+                    <span class="font-size-sm text-muted"><?= $column['subTitle'] ?? '' ?></span>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</div>
+
+
+
+

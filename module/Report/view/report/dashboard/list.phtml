@@ -1,0 +1,31 @@
+<?php
+/**
+ * File dashboard.phtml
+ *
+ * since: 24.09.2020
+ * author: alexej@kisselev.de
+ */
+
+?>
+<div class="col-lg-12 px-0"<?php echo devhelp(__FILE__); ?>>
+    <!-- BEGIN DATA CARD-->
+    <div class="card card-custom gutter-b">
+        <div class="card-body">
+            <?php
+            echo $this->top;
+            ?>
+        </div>
+    </div>
+</div>
+
+<?php
+echo $this->data;
+
+$this->headScript()
+    ->appendFile('/highcharts-8.2.0/highcharts.js')
+    ->appendFile('/highcharts-8.2.0/modules/data.js')
+    ->appendFile('/highcharts-8.2.0/modules/exporting.js')
+    ->appendFile('/highcharts-8.2.0/modules/export-data.js')
+    ->appendFile('/highcharts-8.2.0/modules/accessibility.js')
+    ->appendFile('/highcharts-8.2.0/modules/sankey.js')
+    ->appendFile('/highcharts-8.2.0/modules/no-data-to-display.js');

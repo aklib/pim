@@ -1,0 +1,47 @@
+<?php
+    /**
+     *
+     * user-list.phtml
+     *
+     * @since 16.05.2017
+     * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+     */
+
+    use Acl\Entity\AclResource;
+    use Application\View\Manager\ViewManager;
+    use Psr\Container\ContainerInterface;
+
+    $controller = $this->params('controller');
+    $route = $this->params('route');
+    /* @var ContainerInterface $sm */
+    $sm = $this->getServiceManager();
+    /** @var ViewManager $manager */
+    $manager = $sm->get(ViewManager::class);
+    if ($this->acl()->hasResource($controller, 'create') && $this->acl()->isAllowed(null, $controller, 'create')) {
+        //@todo check if action exists
+        $urlC = $this->url($route, ['controller' => $controller, 'action' => 'create']);
+    }
+    // configure view button
+    $aclResource = $this->aclResource;
+    if ($aclResource instanceof AclResource && $this->acl()->isAllowed(null, $controller, 'configure')) {
+        //@todo check if action exists
+        $urlCol = $this->url($route, [
+            'controller' => $controller,
+            'action'     => 'configure',
+            'id'         => $aclResource->getId()
+        ]);
+    }
+
+?>
+<div class="d-flex align-items-center no-gutters"<?php echo devhelp(__FILE__); ?>>
+    <?php if (!empty($urlCol)): ?>
+        <a class="btn btn-default btn-hover-light-primary btn-sm" href="<?= $urlCol ?>">
+            <i class="la la-cogs"></i>&nbsp;<?php echo $this->translate('Configure View') ?>
+        </a>
+    <?php endif;
+        if (!empty($urlC)): ?>
+            <a class="btn btn-default btn-hover-light-primary btn-sm ml-1" href="<?= $urlC ?>">
+                <i class="la la-plus"></i>&nbsp;<?php echo $this->translate('Create') ?>
+            </a>
+        <?php endif; ?>
+</div>

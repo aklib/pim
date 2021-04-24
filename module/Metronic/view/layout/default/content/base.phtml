@@ -1,0 +1,25 @@
+<?php
+    /**
+     * base.phtml
+     *
+     * @since 23.12.2019
+     * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+     */
+?>
+<!--begin::Entry-->
+<div class="d-flex flex-column-fluid"<?php echo devhelp(__FILE__) ?>>
+    <!--BEGINN::Container-->
+    <div class="container-fluid">
+        <div class="d-flex justify-content-center flex-wrap gutter-b">
+            <?php
+               /* ak: @see default/list and default/edit
+               echo $this->render('messenger/flash');
+               */
+            ?>
+            <!-- END PAGE CONTENT-->
+            <?= $this->content ?>
+            <!-- END PAGE CONTENT-->
+        </div>
+    </div>
+    <!--END::Container-->
+</div>

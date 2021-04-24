@@ -1,0 +1,17 @@
+<!--begin::Main-->
+<div class="col-lg-12">
+    <!--begin::Error-->
+    <h1 class="font-weight-boldest text-danger mt-15" style="font-size: 10rem">500</h1>
+    <p class="font-size-h3 text-muted font-weight-normal">OOPS! Something went wrong here</p>
+    <!--end::Content-->
+
+    <?php
+    echo $this->render('error/button-back');
+
+    echo $this->render('error/exception-stack-trace');
+
+    ?>
+
+    <!--end::Error-->
+</div>
+<!--end::Main-->

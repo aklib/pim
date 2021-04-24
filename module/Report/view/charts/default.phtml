@@ -1,0 +1,91 @@
+<?php
+/**
+ * File line.phtml
+ *
+ * since: 20.10.2020
+ * author: alexej@kisselev.de
+ */
+
+use Elastic\View\Helper\ChartBuilder;
+use Elastica\Exception\InvalidException;
+use Elastica\ResultSet;
+
+$column = $this->column;
+
+/** @var ResultSet $resultSet */
+$resultSet = $this->data;
+if (!$resultSet instanceof ResultSet) {
+    return;
+}
+//dump($resultSet->getAggregation($column['name']));
+$agg = null;
+try {
+    $agg = $resultSet->getAggregation($column['name']);
+} catch (InvalidException $exception) {
+    if (!$resultSet->getResponse()->isOk()) {
+        echo 'no aggregation named ' . $column['name'];
+    }
+    return;
+}
+
+$containerId = $column['name'] . '_container';
+
+/** @var ChartBuilder $builder */
+$builder = $this->chartBuilder($column)->createChart($agg, $column['name']);
+
+$chart = $builder->getChart();
+/*if($column['name'] === 'hourly_bid_won'){
+    dump($agg);
+}*/
+/*if(empty($chart['series'])){
+    return;
+}*/
+
+$json = null;
+try {
+    $json = json_encode($chart, JSON_THROW_ON_ERROR);
+} catch (Exception $e) {
+}
+if ($json === null) {
+    return;
+}
+$wrapClass = empty($column['class']) ? 'col-lg-12' : $column['class'];
+?>
+<div class="<?= $wrapClass ?> px-0 bg-white rounded"<?php echo devhelp(__FILE__); ?>>
+    <div id="<?= $containerId ?>" class="col" <?php echo devhelp(__FILE__); ?>>
+
+    </div>
+</div>
+
+
+    <?php
+    $timezone = urldecode($this->params()['timezone'] ?? date_default_timezone_get());
+    $this->inlineScript()->captureStart();
+    ?>
+    $(document).ready(function () {
+        let chart = <?= $json ?>;
+        Highcharts.setOptions({
+            lang: {
+                decimalPoint: ',',
+                thousandsSep: '.',
+                noData: 'Data not available or empty'
+            },
+            time: {
+                timezone: '<?= $timezone ?>'
+            },
+            chart: {
+                style: {
+                    fontFamily: 'Poppins,Helvetica,sans-serif'
+                }
+            }
+        });
+        Highcharts.chart('<?= $containerId ?>', chart);
+    });
+
+    <?php
+    $this->inlineScript()->captureEnd();
+    ?>
+
+
+
+

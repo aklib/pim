@@ -1,0 +1,96 @@
+{
+  "name": "aklib/pim",
+  "description": "PIM MVC Skeleton Application",
+  "type": "project",
+  "license": "BSD-3-Clause",
+  "keywords": [
+    "laminas",
+    "pim",
+    "skeleton",
+    "framework"
+  ],
+  "require": {
+    "php": "^7.4",
+    "laminas/laminas-component-installer": "^1.0 || ^2.1",
+    "laminas/laminas-development-mode": "^3.2",
+    "laminas/laminas-mvc": "^3.1.1",
+    "laminas/laminas-cache": "^2.9.0",
+    "laminas/laminas-json": "^3.1.2",
+    "laminas/laminas-log": "^2.11",
+    "laminas/laminas-mvc-console": "^1.2.0",
+    "laminas/laminas-mvc-i18n": "^1.1.1",
+    "laminas/laminas-mvc-plugins": "^1.0.1",
+    "laminas/laminas-psr7bridge": "^1.2.0",
+    "laminas/laminas-session": "^2.9.1",
+    "florianwolters/component-core-stringutils": "0.4.*",
+    "doctrine/doctrine-orm-module": "^3.0",
+    "laminas/laminas-navigation": "^2.9",
+    "laminas/laminas-permissions-acl": "^2.7",
+    "laminas/laminas-router": "^3.3",
+    "laminas/laminas-view": "^2.11",
+    "doctrine/orm": "^2.7",
+    "container-interop/container-interop": "^1.2",
+    "laminas/laminas-i18n": "^2.10",
+    "laminas/laminas-servicemanager": "^3.4",
+    "laminas/laminas-stdlib": "^3.2",
+    "laminas/laminas-form": "^2.14",
+    "laminas/laminas-crypt": "^3.3",
+    "doctrine/doctrine-laminas-hydrator": "^2.0",
+    "laminas/laminas-mvc-form": "^1.0",
+    "laminas/laminas-code": "^3.4",
+    "laminas/laminas-filter": "^2.9",
+    "doctrine/collections": "^1.6",
+    "psr/container": "^1.0",
+    "laminas/laminas-validator": "^2.13",
+    "laminas/laminas-inputfilter": "^2.10",
+    "laminas/laminas-http": "^2.13",
+    "laminas/laminas-paginator": "^2.8",
+    "laminas/laminas-mvc-plugin-flashmessenger": "^1.2",
+    "laminas/laminas-mail": "^2.12",
+    "laminas/laminas-mime": "^2.7",
+    "ext-json": "*",
+    "doctrine/annotations": "^1.10",
+    "ruflin/elastica": "^7.0",
+    "ext-pdo": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Application\\": "module/Application/src/",
+      "Category\\": "module/Category/src/",
+      "Metronic\\": "module/Metronic/src/",
+      "Bootstrap\\": "module/Bootstrap/src/",
+      "User\\": "module/User/src/",
+      "Acl\\": "module/Acl/src/",
+      "Attribute\\": "module/Attribute/src/",
+      "Company\\": "module/Company/src/",
+      "Product\\": "module/Product/src/",
+      "Elastic\\": "module/Elastic/src/",
+      "Report\\": "module/Report/src/",
+      "Email\\": "module/Email/src/",
+      "Api\\": "module/Api/src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "ApplicationTest\\": "module/Application/test/"
+    }
+  },
+  "scripts": {
+    "cs-check": "phpcs",
+    "cs-fix": "phpcbf",
+    "development-disable": "laminas-development-mode disable",
+    "development-enable": "laminas-development-mode enable",
+    "development-status": "laminas-development-mode status",
+    "post-create-project-cmd": [
+      "@development-enable",
+      "php bin/update-gitignore.php"
+    ],
+    "serve": "php -S 0.0.0.0:8080 -t public",
+    "test": "phpunit"
+  },
+  "require-dev": {
+    "roave/security-advisories": "dev-master",
+    "laminas/laminas-developer-tools": "^2.0.1",
+    "laminas/laminas-test": "^3.3.0"
+  }
+}

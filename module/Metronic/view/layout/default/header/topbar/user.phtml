@@ -1,0 +1,16 @@
+<?php
+    /**
+     * user.phtml
+     *
+     * @since 24.12.2019
+     * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+     */
+    if (!$this->serviceManager()->has('authentication')) {
+        //  authentication module not available
+        return;
+    }
+
+    echo $this->navigation('default')->setUseAcl(false)->menu()->setPartial([
+        'navigation/user',
+        'navigation',
+    ]);

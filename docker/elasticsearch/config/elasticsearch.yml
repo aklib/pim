@@ -1,0 +1,27 @@
+---
+## Default Elasticsearch configuration from Elasticsearch base image.
+## https://github.com/elastic/elasticsearch/blob/master/distribution/docker/src/docker/config/elasticsearch.yml
+#
+#cluster.name: "docker-cluster"
+#network.host: 0.0.0.0
+
+## X-Pack settings
+## see https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-xpack.html
+#
+#xpack.license.self_generated.type: trial
+#xpack.security.enabled: true
+#xpack.monitoring.collection.enabled: true
+
+
+cluster.name: apag2020
+node.name: rel01
+#path.data: /var/lib/elasticsearch
+#path.logs: /var/log/elasticsearch
+network.host: 95.216.154.170
+discovery.seed_hosts: ["95.216.154.170"]
+cluster.initial_master_nodes: ["95.216.154.170"]
+
+xpack.security.enabled: false
+xpack.monitoring.enabled: false
+xpack.watcher.enabled: false
+xpack.graph.enabled: false

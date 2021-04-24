@@ -1,0 +1,74 @@
+<?php
+
+    /**
+     *
+     * flash.phtml
+     *
+     * @since 27.05.2017
+     * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+     */
+
+    use Laminas\Mvc\Plugin\FlashMessenger\FlashMessenger;
+
+    $flash = $this->flashMessenger();
+    /** @var FlashMessenger $flashMessenger */
+    $flashMessenger = $flash->getPluginFlashMessenger();
+
+    if (!$flashMessenger->hasErrorMessages() &&
+        !$flashMessenger->hasInfoMessages() &&
+        !$flashMessenger->hasSuccessMessages() &&
+        !$flashMessenger->hasWarningMessages() &&
+        !$flashMessenger->hasMessages()
+    ) {
+        return;
+    }
+    $class = 'default';
+
+    $flash->setMessageOpenFormat(
+        '<div class="alert-icon">
+                 <i%s></i>
+             </div>
+             <div class="alert-text">')
+        ->setMessageSeparatorString('<br>')
+        ->setMessageCloseString(
+            '</div>
+                <div class="alert-close">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true"><i class="ki ki-close"></i></span>
+                    </button>
+                </div>'
+        );
+    //todo separate by namespaces
+
+    if ($flashMessenger->hasErrorMessages()) { ?>
+        <div class="alert alert-custom alert-outline-2x alert-outline-danger fade show mb-5" role="alert">
+            <?php echo $flash->render(FlashMessenger::NAMESPACE_ERROR, ['flaticon-warning']); ?>
+        </div>
+        <?php
+    }
+    if ($flashMessenger->hasInfoMessages()) {?>
+        <div class="alert alert-custom alert-outline-2x alert-outline-info fade show mb-5" role="alert">
+            <?php echo $flash->render(FlashMessenger::NAMESPACE_INFO, ['flaticon-information']); ?>
+        </div>
+        <?php
+    }
+    if ($flashMessenger->hasSuccessMessages()) {?>
+        <div class="alert alert-custom alert-outline-2x alert-outline-success fade show mb-5" role="alert">
+            <?php echo $flash->render(FlashMessenger::NAMESPACE_SUCCESS, ['flaticon-like']); ?>
+        </div>
+        <?php
+    }
+    if ($flashMessenger->hasWarningMessages()) {
+        ?>
+        <div class="alert alert-custom alert-outline-2x alert-outline-warning fade show mb-5" role="alert">
+            <?php echo $flash->render(FlashMessenger::NAMESPACE_WARNING, ['flaticon-warning']); ?>
+        </div>
+        <?php
+    }
+    if ($flashMessenger->hasMessages()) {
+        ?>
+        <div class="alert alert-custom alert-outline-2x alert-outline-warning fade show mb-5" role="alert">
+            <?php echo $flash->render(FlashMessenger::NAMESPACE_DEFAULT, ['flaticon-bell-1']); ?>
+        </div>
+        <?php
+    }

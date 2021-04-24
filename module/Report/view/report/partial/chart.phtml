@@ -1,0 +1,15 @@
+<?php
+/**
+ * File chart.phtml
+ *
+ * since: 20.10.2020
+ * author: alexej@kisselev.de
+ */
+
+$column = $this->column;
+
+if (empty($column)) {
+    return;
+}
+
+echo $this->render('charts/' . $column['type'], ['column' => $column, 'data' => $this->data]);

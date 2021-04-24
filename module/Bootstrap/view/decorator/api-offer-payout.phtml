@@ -1,0 +1,63 @@
+<?php
+/**
+ *
+ * api-offer-payout.phtml
+ *
+ * @since 15.02.2019
+ * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+ */
+/* @var $row \Application\Entity\ApiOffer */
+$row = $this->row;
+$iconUrl = $this->decorate($row, 'getIconUrl');
+
+if (empty($iconUrl)) {
+    $iconUrl = '/img/no-image-icon.jpg';
+}
+
+$previewlink = $this->decorate($row, 'getPreviewlink');
+$hasPreviewlink = true;
+if (empty($previewlink)) {
+    $hasPreviewlink = false;
+}
+?>
+<div class="media"<?php echo devhelp(__FILE__); ?>>
+    <div class="media-body">
+        <div class="media-heading">
+            <?php
+            echo $this->payout;
+            ?>
+        </div>       
+        <?php
+        
+        if (!$this->acl()->isPublisher()) {            
+            $payouts = $row->getPayouts();
+            /** @noinspection PhpUnhandledExceptionInspection */
+            $oneHour = new DateInterval('PT1H');
+            $from = new \DateTime('- 1 day');
+            /* @var $key \DateTime */
+            $key = $from->format('YmdH');
+            $now = new \DateTime();
+            $hours = [];
+            while($now > $from) {
+                $from->add($oneHour);
+                $key = $from->format('YmdH');
+                $hours[$key] = 0;
+            }
+            $payoutArray = [];
+            /* @var $key \DateTime */
+            foreach($payouts as $payout) {
+                /* @var $payout \Application\Entity\ApiOfferPayout */
+                $time = $payout->getTimeKey();
+                if (!is_null($time)) {
+                    if ($hours[$time->format('YmdH')] === 0) {
+                        $hours[$time->format('YmdH')] = floatval($payout->getPayout());
+                    }
+                }
+            }
+            ksort($hours);
+            ?>
+            <!--<span class=""><? echo implode(',', $hours); ?></span>-->
+            <span class="bar_cap"><? echo implode(',', $hours); ?></span>
+<?php } ?>
+    </div>
+</div>

@@ -1,0 +1,84 @@
+<?php
+    /**
+     *
+     * list.phtml
+     *
+     * @since 01.05.2017
+     * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+     */
+
+    use Application\View\Manager\ViewManager;
+    use Laminas\View\Helper\PaginationControl;
+    use Psr\Container\ContainerInterface;
+
+    /* @var ContainerInterface $sm */
+    $sm = $this->getServiceManager();
+    /** @var ViewManager $manager */
+    $manager = $sm->get(ViewManager::class);
+    $columns = $manager->getColumns();
+
+    $paginator = '';
+    if($this->paginator && count($columns) > 0) {
+        $paginator = $this->paginationControl(
+        // the paginator object
+            $this->paginator,
+            //mode default = sliding (elastic
+            // (can be initialized in AbstractModuleController)
+            PaginationControl::getDefaultScrollingStyle(),
+            // the partial to use to render the control
+            // (initialized in AbstractModuleController)
+            PaginationControl::getDefaultViewPartial(),
+            [
+                'limits' => empty($this->limits) ? [20, 50, 100, 200] : $this->limits
+            ]
+        );
+    }
+
+
+?>
+<!-- BEGIN DATA CONTAINER ROW -->
+
+<div class="col-lg-12 px-0">
+    <?php echo $this->render('messenger/flash'); ?>
+    <?php
+        if (!empty($paginator)) {
+            echo $paginator;
+        }
+    ?>
+    <!-- BEGIN DATA CARD-->
+    <div class="card card-custom gutter-b">
+        <?php if(!empty($this->title) || !empty($this->subtitle)): ?>
+        <div class="card-header flex-wrap py-3 ">
+            <h5 class="card-label">
+                <?php
+                    if (!empty($this->title)) {
+                        echo $this->translate($this->title);
+                    }
+                    if (!empty($this->subtitle)) {
+                        echo '<span class="d-block text-muted pt-2 font-size-sm">' . $this->translate($this->subtitle) . '</span>';
+                    }
+                ?>
+            </h5>
+
+        </div>
+        <?php endif; ?>
+
+        <div class="card-body">
+<!--            <form id="listform" action="" method="get" class="form">-->
+                <!-- BEGIN ADDITIONAL TEMPLATE -->
+                <?php echo $this->top ?>
+                <!-- END ADDITIONAL TEMPLATE-->
+
+                <!-- BEGIN DATA -->
+                <?php echo $this->data ?>
+                <!-- END DATA-->
+
+<!--            </form>-->
+        </div>
+    </div>
+    <!-- END DATA CARD-->
+    <?php echo $paginator; ?>
+</div>
+
+<!-- END DATA CONTAINER ROW -->
+<?php //$this->headScript()->appendFile('/js/ajax.modal.js');

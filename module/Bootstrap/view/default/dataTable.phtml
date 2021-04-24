@@ -1,0 +1,252 @@
+<?php
+    /**
+     *
+     * dataTable.phtml
+     *
+     * @since 01.05.2017
+     * @author Alexej Kisselev <alexej.kisselev@gmail.com>
+     */
+
+    use Application\View\Manager\ViewManager;
+    use Laminas\Form\Element;
+    use Psr\Container\ContainerInterface;
+
+    /* @var ContainerInterface $sm */
+    $sm = $this->getServiceManager();
+    /** @var ViewManager $manager */
+    $manager = $sm->get(ViewManager::class);
+    $columns = $manager->getColumns();
+    $urlParams = $manager->getUrlParams();
+    $sortBy = $urlParams['sortBy'] ?? null;
+
+    if (empty($columns)) {
+        echo 'No data columns found';
+        return;
+    }
+?>
+
+<div class="dataTables_wrapper table-responsive">
+    <table class="table table-head-custom dataTable"<?php echo devhelp(__FILE__) ?>>
+        <thead>
+        <tr>
+            <?php
+                /*
+                 * =========================================================================
+                 * DRAW TABLE HEADER COLS
+                 * =========================================================================
+                 */
+
+                $url = '';
+                $icon = '';
+                $tooltip = '';
+
+                foreach ($columns as $column):
+                    if (empty($column) || $column['hidden'] === true) {
+                        continue;
+                    }
+                    $colname = $column['name'];
+                    if ($this->unsortable !== true && !(isset($column['unsortable']) && $column['unsortable'] === true)):
+                        if ($sortBy === $colname . URL_VALUE_SEPARATOR . 'ASC') {
+                            $url = $this->urlx(['sortBy' => $colname . URL_VALUE_SEPARATOR . 'DESC']);
+                            $icon = 'sorting_asc';
+                            $link = '';
+                        } elseif ($sortBy === $colname . URL_VALUE_SEPARATOR . 'DESC') {
+                            $url = $this->urlx(['sortBy' => null]);
+                            $icon = 'sorting_desc';
+                            $link = '';
+                        } else {
+                            $url = $this->urlx(['sortBy' => $colname . URL_VALUE_SEPARATOR . 'ASC']);
+                            $icon = 'sorting';
+                            $link = 'text-muted';
+                        }
+                        ?>
+                        <th id="column_<?= $colname ?>" data-colname="<?php echo $colname; ?>" scope="col" class="<?= $icon ?>">
+                            <a class="<?php echo $link ?>" href="<?php echo $url ?>"
+                               class="<?= $sortBy === $colname . '|ASC' ? ' active asc' : '' ?><?= $sortBy === $colname . '|DESC' ? ' active desc' : '' ?>"
+                               data-original-title="<?php print$this->translate($tooltip); ?>" data-placement="top">
+                                <?= $this->translate($column['label']) ?>
+                            </a>
+                        </th>
+                    <?php else: ?>
+                        <th id="column_<?= $colname ?>" data-colname="<?php echo $colname; ?>" class="sorting_disabled" scope="col">
+                            <?php echo(!empty($column['label']) ? $this->translate($column['label']) : '') ?>
+                        </th>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            <th class="table-actions text-nowrap" style="width: 0" scope="col"><?= $this->translate('Action') ?></th>
+        </tr>
+
+        <?php
+            /*
+             * =========================================================================
+             * DRAW TABLE HEADER FILTERS
+             * =========================================================================
+             */
+            if (empty($settings['hideFilters']) && empty($this->hideFilters)):?>
+                <tr>
+                    <?php
+                        if ($this->showCheckBoxes):
+                            ?>
+                            <td>
+                                <?php if ($this->doResetHistory): ?>
+                                    <input type="hidden" name="reset" value="history"/>
+                                <?php endif; ?>
+                            </td>
+                        <?php
+                        endif;
+
+                        foreach ($columns as $colname => $column):
+                            if (empty($column) || $column['hidden'] === true) {
+                                continue;
+                            }
+                            $class = $column['attr']['class'] ?? '';
+                            ?>
+                            <td <?php echo empty($class) ? '' : 'class="' . $class . '"' ?>>
+                                <?php
+                                    $element = $manager->getColumnFilter($colname);
+                                    if ($element instanceof Element) {
+                                        echo $this->formElement($element);
+                                    }
+                                ?>
+                            </td>
+                        <?php endforeach; ?>
+                    <td style="white-space: nowrap">
+                        <button type="submit" class="btn btn-sm btn-clean btn-icon" title="<?php echo $this->translate('Apply Filters') ?>">
+                            <i class="la la-check"></i>
+                        </button>
+                        <a href="<?php echo $this->urlx($manager->getClearFilterQuery()); ?>"
+                           title="<?php echo $this->translate('Clear all filters') ?>"
+                           class="btn btn-sm btn-clean btn-icon">
+                            <i class="la la-eraser"></i>
+                        </a>
+                    </td>
+                </tr>
+            <?php endif; ?>
+        </thead>
+
+        <tbody>
+
+        <?php
+            /*
+             * =========================================================================
+             * DRAW TABLE BODY ROWS (DATA)
+             * =========================================================================
+             */
+            $details = '';
+
+            if (is_iterable($this->data) && count($this->data) > 0):
+                $n = 0;
+                foreach ($this->data as $row):
+                    $n++;
+                    ?>
+                    <tr>
+                        <?php
+                            foreach ($columns as $colname => $column):
+                                if (empty($column) || $column['hidden'] === true) {
+                                    continue;
+                                }
+                                $get = isset($column['type']) && $column['type'] !== 'boolean' ? 'get' : 'is';
+                                $method = empty($column['method']) ? $get . ucfirst($colname) : $column['method'];
+                                $value = $this->decorate($row, $method, [$column]);
+                                if (is_object($value)) {
+                                    echo '<td>instance of ' . get_class($value) . '</td>';
+                                    continue;
+                                }
+                                $class = $column['attr']['class'] ?? '';
+                                $style = $column['attr']['style'] ?? '';
+                                $title = '';
+                                if (str_contains($class, 'truncate')) {
+                                    $title = $value;
+                                }
+                                if ($get === 'is' && $value === true) {
+                                    $value = '<span class="label label-xl label-dot label-success d-block m-auto"></span>';
+                                }
+                                ?>
+                                <td data-type="<?=  $column['type'] ?? '' ?>" class="column-<?= $colname ?>"><?= $this->translate($value) ?></td>
+                            <?php
+                            endforeach;
+                            $actions = $manager->getActions();
+                            //$rowTemplate = empty($actions['row']['template']) ? 'action/row.phtml' : $actions['row']['template'];
+
+                        ?>
+                        <td class="table-actions nowrap">
+                            <?php
+                                foreach ($actions as $action):
+                                    $href = '';
+                                    if (!empty($action['route'])) {
+                                        $params = $action['route']['params'];
+                                        $params['id'] = $this->decorate($row, 'getId');
+                                        $options = [];
+                                        if (!empty($action['route']['options'])) {
+                                            $options['query'] = $action['route']['options'];
+                                        }
+                                        $href = $this->url($action['route']['name'], $params, $options);
+
+                                    }
+                                    if (empty($href)) {
+                                        $href = 'javascript:;';
+                                    }
+                                    $label = '';
+                                    if (!empty($action['label'])) {
+                                        $label = $this->translate($action['label']);
+                                    }
+                                    $class = !empty($action['attr']['class']) ? trim($action['attr']['class']) : 'btn btn-sm btn-clean' . (empty($label) ? ' btn-icon' : '');
+                                    $attributes = '';
+                                    if (!empty($action['attr'])) {
+                                        $attribute = [];
+                                        foreach ($action['attr'] as $name => $value) {
+                                            switch ($name) {
+                                                case 'label':
+                                                case 'title':
+                                                    $value = $this->translate($value);
+                                            }
+                                            $attribute[] = sprintf('%s="%s"', $name, $this->escapeHtmlAttr($value));
+                                        }
+
+                                        $attributes = ' ' . implode(' ', $attribute);
+                                    }
+
+                                    $icon = '';
+                                    if (!empty($action['icon'])) {
+                                        $icon = '<i class="' . $action['icon'] . '"></i>';
+                                    }
+                                    ?>
+                                    <a href="<?= $href ?>" class="<?= $class ?>"<?= $attributes ?>>
+                                        <?= $icon . ' ' . $label ?>
+                                    </a>
+                                <?php endforeach; ?>
+                        </td>
+                    </tr>
+                    <?php
+                    if (isset($row->row_details) && is_object($row->row_details)):
+                        $url = $row->row_details->getVariable('url');
+                        ?>
+                        <tr class="details-row" style="display:none"<?php echo !empty($url) ? ' data-url="' . $url . '"' : '' ?>>
+                            <td class="details" colspan="<?= (count($columns) + 1) ?>">
+                            </td>
+                        </tr>
+                    <?php
+                    endif;
+                endforeach;
+            endif;
+        ?>
+        </tbody>
+    </table>
+</div>
+<!--<script>-->
+<?php
+
+    $this->headLink()->appendStylesheet('/assets/plugins/custom/datatables/datatables.bundle.css');
+    if (isset($row->row_details) && is_object($row->row_details)):
+        $this->headScript()->appendFile('/js/table.row.details.js');
+        $this->inlineScript()->captureStart();
+        ?>
+        $(document).ready(function() {
+        $('td.details').rowDetails();
+        });
+        <?php
+        $this->inlineScript()->captureEnd();
+    endif;
+?>
+<!--</script>-->
+
