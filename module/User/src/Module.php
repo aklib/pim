@@ -11,7 +11,10 @@ namespace User;
 
 use Acl\Service\AclService;
 use Application\View\Helper\History;
+use Exception;
 use Laminas\Authentication\AuthenticationService;
+use Laminas\Authentication\Result;
+use Laminas\Crypt\Password\Bcrypt;
 use Laminas\Mvc\MvcEvent;
 use Laminas\View\Model\ViewModel;
 use Psr\Container\ContainerInterface;
@@ -87,6 +90,15 @@ class Module
         $history = $sm->get('ViewHelperManager')->get('history');
 
         if (!$authenticationService->hasIdentity()) {
+            if($moduleOptions->isAllowGuest()){
+                try {
+                    $result = $authManager->login('guest@kisselev.de', 'guest', 1);
+                    if ($result->getCode() !== Result::SUCCESS) {
+                        return;
+                    }
+                } catch (Exception $e) {
+                }
+            }
             // redirect the user to that URL after successful login.
             $history->save();
             return $authManager->forwardToLogin($event);

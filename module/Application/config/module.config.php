@@ -38,6 +38,9 @@ use Application\View\Helper\Form\FormRow;
 use Application\View\Helper\ServiceManager;
 use Application\View\Manager\EmptyAdapter;
 use Application\View\Manager\ViewManager;
+use Attribute\Hydrator\CustomEntityHydratorFactory;
+use Doctrine\Laminas\Hydrator\DoctrineObject;
+use Gedmo\Timestampable\TimestampableListener;
 use Laminas\Router\Http\Segment;
 
 return [
@@ -102,7 +105,7 @@ return [
     ],
     'navigation'         => [
         'default' => [
-            'admin'          => [
+            'admin' => [
                 'label' => 'Administration',
                 'route' => 'default/admin',
                 'order' => 30,
@@ -120,7 +123,8 @@ return [
             EntityEdit::class              => InvokableAwareFactory::class,
             ListForm::class                => InvokableAwareFactory::class,
             EmptyAdapter::class            => InvokableAwareFactory::class,
-            DoctrineEventSubscriber::class => InvokableAwareFactory::class
+            DoctrineEventSubscriber::class => InvokableAwareFactory::class,
+            DoctrineObject::class          => CustomEntityHydratorFactory::class,
         ],
     ],
     'view_helpers'       => [
@@ -224,7 +228,14 @@ return [
         ],
     ],
     'doctrine'           => [
-        'driver' => [
+        'eventmanager' => [
+            'orm_default' => [
+                'subscribers' => [
+                    TimestampableListener::class,
+                ],
+            ],
+        ],
+        'driver'       => [
             'application_entities' => [
                 'paths' => [__DIR__ . '/../src/Entity']
             ],

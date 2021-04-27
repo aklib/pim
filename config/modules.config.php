@@ -39,9 +39,11 @@ return [
     'Metronic',
     'Bootstrap',
     'Application',
-    'Category',
-//    'Acl',
     'User',
+    'Category',
+//    'Attribute',
+//    'Acl',
+
     /*'Product',
     'Elastic',
     'Email',*/

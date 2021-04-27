@@ -29,6 +29,11 @@ class ModuleOptions extends AbstractModuleOptions
      * @var bool
      */
     private bool $dispatchOn = true;
+    /**
+     * @var bool
+     */
+    private bool $allowGuest = true;
+
 
     private ContainerInterface $sm;
 
@@ -104,6 +109,22 @@ class ModuleOptions extends AbstractModuleOptions
     {
         $this->dispatchOn = $dispatchOn;
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAllowGuest(): bool
+    {
+        return $this->allowGuest;
+    }
+
+    /**
+     * @param bool $allowGuest
+     */
+    public function setAllowGuest(bool $allowGuest): void
+    {
+        $this->allowGuest = $allowGuest;
     }
 
     /**

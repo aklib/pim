@@ -25,7 +25,7 @@ class User extends AbstractPrettyBootstrapElement
 
     public function getUserRole(): string
     {
-        return $this->getObject()->getUserRole()->getDescription();
+        return $this->getObject()->getUserRole()->getName();
     }
 
     /**

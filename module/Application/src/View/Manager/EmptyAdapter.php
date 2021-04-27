@@ -16,10 +16,8 @@
     use Application\ServiceManager\Interfaces\AclAware;
     use Application\View\Manager\Interfaces\ViewAdapterInterface;
 
-    class EmptyAdapter extends AbstractAwareContainer implements ViewAdapterInterface, AclAware
+    class EmptyAdapter extends AbstractAwareContainer implements ViewAdapterInterface
     {
-
-        private AclService $acl;
 
         public function getEntityName(): string
         {
@@ -65,7 +63,7 @@
         public function getActionsSpecifications(): array
         {
             $actions = [];
-            if ($this->getAcl()->isAllowed(null, $this->getControllerName(), 'edit')) {
+
                 $actions[] = [
                     'icon'  => 'la la-edit',
                     'route' => [
@@ -79,7 +77,6 @@
                         'title' => 'Edit',
                     ]
                 ];
-            }
             return $actions;
         }
 
@@ -102,30 +99,10 @@
                 case 'configs':
                     return false;
             }
-            return $this->getAcl()->isAllowedColumn(null, $this->getControllerName(), $columnName);
-        }
-
-
-        /**
-         * AclAware implementation
-         * @return AclService
-         */
-        public function getAcl(): AclService
-        {
-            return $this->acl;
-        }
-
-        /**
-         * AclAware implementation
-         * @param AclService $acl
-         */
-        public function setAcl(AclService $acl): void
-        {
-            $this->acl = $acl;
-        }
-
-        public function hasAcl(): bool
-        {
-            return $this->getServiceManager()->has('acl');
+            if (!$this->getServiceManager()->has('authentication')) {
+                return true;
+            }
+            return true;
+            //return $this->getAcl()->isAllowedColumn(null, $this->getControllerName(), $columnName);
         }
     }

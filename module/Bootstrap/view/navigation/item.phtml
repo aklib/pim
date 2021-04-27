@@ -38,7 +38,6 @@
             if ($child->get('visible') === false || $child->get('hidden') === true) {
                 continue;
             }
-            dump('tit');
             if ($this->acl()->isAllowed(null, $child->getController(), $child->getAction())) {
                 $children[] = $child;
             }

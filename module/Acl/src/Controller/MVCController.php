@@ -191,7 +191,7 @@ class MVCController extends AbstractAclController
                     $AclResource = $this->filterOne($savedResources, $resource, $privilege);
                     //  can't be NULL, see above
                     $element = $this->filterOne($roleResources, $resource, $privilege);
-                    if ($UserRole->getName() !== $UserRole::USER_ROLE_DEVELOPER) {
+                    if ($UserRole->getUniqueKey() !== $UserRole::USER_ROLE_DEVELOPER) {
                         if ($allowed[$UserRole->getId()] === '1') {
                             if ($element === null) {
                                 $roleResources->add($AclResource);

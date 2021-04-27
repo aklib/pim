@@ -11,6 +11,7 @@ namespace Application\Form\Factory;
 use Application\Repository\AbstractDoctrineDao;
 use Application\ServiceManager\AbstractAwareContainer;
 use Application\ServiceManager\Interfaces\Constant;
+use Application\ServiceManager\Interfaces\DoctrineDaoAware;
 use Application\ServiceManager\Interfaces\TranslatorAware;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Exception;
@@ -168,9 +169,10 @@ abstract class AbstractEntityFormElementFactory extends AbstractAwareContainer i
                 $repository = $this->getEntityManager()->getRepository($targetEntity);
                 $element = new $elementClass($colName, $this->getElementOptions());
 
-                if ($repository instanceof AbstractDoctrineDao && $element instanceof Select) {
+                if ($repository instanceof DoctrineDaoAware && $element instanceof Select) {
                     // add with empty - not selected value
                     try {
+
                         $options = $isFilter ? ['' => ''] : [];
                         $options = array_replace_recursive($options, $repository->getNamedQueryResult(Constant::NAMED_QUERY_DROPDOWN_CHOICE));
                         foreach ($options as $key => $option) {
@@ -178,6 +180,7 @@ abstract class AbstractEntityFormElementFactory extends AbstractAwareContainer i
                         }
                         $element->setValueOptions($options);
                     } catch (Exception $e) {
+                        die($e->getMessage());
                         $element->setValueOptions([]);
                     }
                 }

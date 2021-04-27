@@ -71,7 +71,7 @@ class ViewManager extends AbstractViewManager
                 continue;
             }
 
-            if (!$this->getAcl()->isAllowedColumn(null, $controllerName, $fieldName)) {
+            if ($this->hasAcl() && !$this->getAcl()->isAllowedColumn(null, $controllerName, $fieldName)) {
                 continue;
             }
 

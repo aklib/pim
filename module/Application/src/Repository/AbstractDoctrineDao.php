@@ -12,6 +12,7 @@ namespace Application\Repository;
 
 use Application\Entity\AppStatus;
 use Application\ServiceManager\Interfaces\Constant;
+use Application\ServiceManager\Interfaces\DoctrineDaoAware;
 use Application\Utils\ClassUtils;
 use DateTime;
 use Doctrine\ORM\AbstractQuery;
@@ -26,7 +27,7 @@ use InvalidArgumentException;
 use RuntimeException;
 use User\Entity\User;
 
-abstract class AbstractDoctrineDao extends AbstractAwareDao
+abstract class AbstractDoctrineDao extends AbstractAwareDao  implements DoctrineDaoAware
 {
 
     private array $requestCache = [];
@@ -200,7 +201,7 @@ abstract class AbstractDoctrineDao extends AbstractAwareDao
      * @param array $data
      * @return string
      */
-    protected function getDropDownChoiceText(array $data): string
+    public function getDropDownChoiceText(array $data): string
     {
         return implode(' ', $data);
     }
@@ -214,7 +215,7 @@ abstract class AbstractDoctrineDao extends AbstractAwareDao
      * Sets parameter(s) for named query
      * @param Query $query
      */
-    protected function setNamedQueryParameter(Query $query): void
+    public function setNamedQueryParameter(Query $query): void
     {
         // override in child class to set parameter
     }

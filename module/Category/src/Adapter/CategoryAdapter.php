@@ -9,9 +9,9 @@
 
 namespace Category\Adapter;
 
-use Application\Form\ConfirmForm;
 use Application\View\Manager\EmptyAdapter;
 use Category\Entity\Category;
+use Category\Form\CategoryCreate;
 use Category\Form\CategoryEdit;
 
 
@@ -24,12 +24,10 @@ class CategoryAdapter extends EmptyAdapter
 
     public function getFormName(): string
     {
-        switch ($this->getActionName()) {
-            case 'edit':
-            case 'create':
-                return CategoryEdit::class;
+        if ($this->getActionName() === 'create') {
+                return CategoryCreate::class;
         }
-        return parent::getFormName();
+        return CategoryEdit::class;
     }
 
     public function getLayoutSpecifications(): array
@@ -44,6 +42,21 @@ class CategoryAdapter extends EmptyAdapter
         return $layout;
     }
 
+    public function isColumnVisible(string $columnName): bool
+    {
+        $yes = parent::isColumnVisible($columnName);
+        if (!$yes) {
+            return false;
+        }
+        switch ($columnName) {
+            case 'lft':
+            case 'lft':
+            case 'children':
+                return false;
+        }
+        return true;
+    }
+
     public function getContentSpecifications(): array
     {
         $content = parent::getContentSpecifications();
@@ -56,24 +69,24 @@ class CategoryAdapter extends EmptyAdapter
     public function getActionsSpecifications(): array
     {
         $actions = parent::getActionsSpecifications();
-        if ($this->getAcl()->isAllowed(null, $this->getControllerName(), 'edit')) {
-            $actions[] = [
-                'icon'  => 'la la-remove',
-                'route' => [
-                    'name'   => 'default/admin',
-                    'params' => [
-                        'controller' => $this->getControllerAlias(),
-                        'action'     => 'delete',
-                    ],
+
+        $actions[] = [
+            'icon'  => 'la la-remove',
+            'route' => [
+                'name'   => 'default/admin',
+                'params' => [
+                    'controller' => $this->getControllerAlias(),
+                    'action'     => 'delete',
                 ],
-                'attr'  => [
-                    'title' => 'Delete',
-                    'class'=>'btn btn-sm btn-hover-light-danger btn-clean btn-icon',
-                    'data-toggle' => 'modal',
-                    'data-target' => "#ajax-modal"
-                ]
-            ];
-        }
+            ],
+            'attr'  => [
+                'title'       => 'Delete',
+                'class'       => 'btn btn-sm btn-hover-light-danger btn-clean btn-icon',
+                'data-toggle' => 'modal',
+                'data-target' => "#ajax-modal"
+            ]
+        ];
+
         return $actions;
     }
 }

@@ -6,7 +6,6 @@
  */
 
 use Company\Entity\Advertiser;
-use Doctrine\ORM\EntityManager;
 use Laminas\Navigation\Page\Mvc;
 use User\Entity\User;
 
@@ -14,11 +13,25 @@ if (!$this->serviceManager()->has('authentication')) {
     //  authentication module not available
     return;
 }
+
 /** @var User $user */
 $user = $this->identity();
 if ($user === null) {
     return;
 }
+if ($user->getFirstName() === 'guest') {
+    $loginUrl = $this->url('auth');
+    ?>
+    <div class="topbar-item" data-offset="0px,0px">
+        <div class="btn btn-icon w-auto btn-clean d-flex align-items-center btn-lg px-2">
+            <a href="<?= $loginUrl ?>" class="text-dark-50 font-size-base d-none d-md-inline mr-3"><?= $this->translate('Login') ?></a>
+        </div>
+    </div>
+    <?php
+    return;
+}
+
+
 /** @var Mvc $userPage */
 $userPage = null;
 /** @var Mvc $page */
@@ -62,29 +75,13 @@ if ($hasChildren && empty($children)) {
 
 ?>
 
-
 <!--begin::User-->
 <div class="dropdown"<?php echo devhelp(__FILE__) ?>>
 
     <!--begin::Toggle-->
     <div class="topbar-item" data-toggle="dropdown" data-offset="0px,0px">
         <div class="btn btn-icon w-auto btn-clean d-flex align-items-center btn-lg px-2">
-            <?php
-            if ($this->acl()->isAdvertiser()):
-                ?>
-                <span class="text-dark-50 font-italic font-weight-light font-size-base d-none d-md-inline mr-10">
-            <?php
-
-            /** @var EntityManager $em */
-            $em = $this->serviceManager()->get(EntityManager::class);
-            $balance = $em->getRepository(Advertiser::class)->getBalance();
-            echo $this->translate('Current balance: ') . ' ' . str_replace('.', ',', $balance) . '$';
-            ?>
-                </span>
-            <?php
-            endif;
-            ?>
-            <span class="text-dark-50 font-size-base d-none d-md-inline mr-3"><i class="icon-md text-dark-50 flaticon-user-ok"></i>&nbsp;<?= $user->getFirstName() ?></span>
+                <span class="text-dark-50 font-size-base d-none d-md-inline mr-3"><i class="icon-md text-dark-50 flaticon-user-ok"></i>&nbsp;<?= $user->getFirstName() ?></span>
         </div>
     </div>
 

@@ -215,7 +215,8 @@ return [
                 'csrf_on'             => true, // csrf security
                 'registration_on'     => false,// show registration link
                 'reset_password_on'   => true,// show password forgot link
-                'dispatch_on'         => false, // redirect to login if not authenticated !!! errors if ACL isn't implemented - for tests only
+                'dispatch_on'         => true, // redirect to login if not authenticated !!!
+                'allow_guest'         => true, // no redirect to login
                 'min_password_length' => 6,
                 'password_options'    => [
                     'min' => 6,

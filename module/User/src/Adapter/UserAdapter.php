@@ -86,39 +86,20 @@ class UserAdapter extends EmptyAdapter
             case 'created':
             case 'changeid':
             case 'changed':
+            case 'password':
+            case 'passwordresettoken':
+            case 'passwordresettokencreationdate':
+            case 'attributevalues':
+            case 'configs':
                 return false;
         }
-        $yes = parent::isColumnVisible($columnName);
-        if ($yes) {
-            return $this->getAcl()->isAllowedColumn(null, UserController::class, $columnName);
-        }
-        return false;
-    }
-
-    public function getColumnsSpecifications(): array
-    {
-
-        /** @var UserDao $dao */
-        $dao = $this->getEntityManager()->getRepository(User::class);
-        $attributeColumns = $dao->getNamedQueryResult(Constant::NAMED_QUERY_ATTRIBUTE_COLUMNS);
-        $specifications =
-            [
-
-            ];
-        $res = array_replace($attributeColumns, $specifications);
-        $columns = [];
-        foreach ($res as $columnName => $specification) {
-            if ($this->isColumnVisible($columnName)) {
-                $columns[$columnName] = $specification;
-            }
-        }
-        return $columns;
+        return true;
     }
 
     public function getActionsSpecifications(): array
     {
         $actions = [];
-        if ($this->getAcl()->isAllowed(null, UserController::class, 'edit')) {
+
             $actions[] = [
                 'icon'  => 'la la-edit',
                 'route' => [
@@ -132,8 +113,8 @@ class UserAdapter extends EmptyAdapter
                     'title' => 'Edit user profile',
                 ]
             ];
-        }
-        if ($this->getAcl()->isAllowed(null, UserController::class, 'status')) {
+
+
             $actions[] = [
                 'icon'  => 'la la-check-double',
                 'route' => [
@@ -149,7 +130,7 @@ class UserAdapter extends EmptyAdapter
                     'data-target' => "#ajax-modal"
                 ]
             ];
-        }
+
         return $actions;
     }
 }

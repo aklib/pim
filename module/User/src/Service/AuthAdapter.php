@@ -83,7 +83,6 @@ class AuthAdapter implements AdapterInterface, EntityManagerAware, ServiceManage
                 $this->email,
                 ['Authenticated successfully.']);
         }
-
         // If password check didn't pass return 'Invalid Credential' failure status.
         return new Result(
             Result::FAILURE_CREDENTIAL_INVALID,

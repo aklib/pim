@@ -31,6 +31,7 @@ use Application\View\Model\Tab\TabFactory;
 use Application\View\Model\Tab\TabItem;
 use Attribute\Entity\AttributeTab;
 use Attribute\Hydrator\AttributeEntityHydrator;
+use Doctrine\Laminas\Hydrator\DoctrineObject;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\UnitOfWork;
@@ -141,7 +142,7 @@ abstract class AbstractModuleController extends AbstractActionController impleme
      * @param string $namespace info/error/success/default
      * @return void
      */
-    protected function addMessage(string $message,string $namespace): void
+    protected function addMessage(string $message, string $namespace): void
     {
         $this->flashMessenger()->addMessage($message, $namespace);
     }
@@ -240,18 +241,19 @@ abstract class AbstractModuleController extends AbstractActionController impleme
 
             $viewModel->setVariable('paginator', $result);
             $dataModel->setVariable('data', $result->getCurrentItems());
-
-            if (!isset($options['configurable']) || $options['configurable'] !== false) {
-                // toolbar
-                /** @var AclResourceDao $dao */
-                $dao = $this->getEntityManager()->getRepository(AclResource::class);
-                $criteria = [
-                    'type'      => 'mvc',
-                    'resource'  => (string)get_class($this),// (string) - escape backslashes
-                    'privilege' => $this->getActionName()
-                ];
-                // init view configuration button
-                $this->layout()->setVariable('aclResource', $dao->findOneBy($criteria));
+            if ($this->getServiceManager()->has('acl')) {
+                if (!isset($options['configurable']) || $options['configurable'] !== false) {
+                    // toolbar
+                    /** @var AclResourceDao $dao */
+                    $dao = $this->getEntityManager()->getRepository(AclResource::class);
+                    $criteria = [
+                        'type'      => 'mvc',
+                        'resource'  => (string)get_class($this),// (string) - escape backslashes
+                        'privilege' => $this->getActionName()
+                    ];
+                    // init view configuration button
+                    $this->layout()->setVariable('aclResource', $dao->findOneBy($criteria));
+                }
             }
 
         } elseif (!empty($dataModel)) {
@@ -327,15 +329,15 @@ abstract class AbstractModuleController extends AbstractActionController impleme
                 if ($form->isValid()) {
                     //@TODO find a solution
                     $data = $this->postValidateFormData(array_replace_recursive($this->getRequest()->getPost()->toArray(), $form->getData()), $entity);
-                    $hydrator = $this->getServiceManager()->get(AttributeEntityHydrator::class);
+                    $hydrator = $this->getServiceManager()->get(DoctrineObject::class);
                     $hydrator->hydrate($data, $entity);
                     $this->afterHydrationFormData($form->getData(), $entity);
                     if ($repository instanceof AbstractAwareDao) {
                         $repository->doSave($entity);
                     } else {
                         $this->getEntityManager()->persist($entity);
+                        $this->getEntityManager()->flush($entity);
                     }
-
                     $submit = $this->params()->fromPost('submit');
                     if ($submit === 'back') {
                         $url = $this->getURL('list', $this->getControllerName(), null);
@@ -619,6 +621,9 @@ abstract class AbstractModuleController extends AbstractActionController impleme
      */
     protected function getUserConfig(string $controller = null, string $action = null): ?UserConfig
     {
+        if (!$this->getServiceManager()->has('authentication')) {
+            return null;
+        }
         $key = $this->getResourceUniqueKey($controller, $action);
         $userConfigs = $this->getCurrentUser()->getConfigs();
         /** @var UserConfig $userConfig */

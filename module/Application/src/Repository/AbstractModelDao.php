@@ -40,9 +40,12 @@
             $qb = $this->getQueryBuilder();
 
             //========= ACL =========
-            /** @var User $user */
-            $user = array_key_exists('user', $options) && $options['user'] instanceof User ? $options['user'] : $this->getCurrentUser();
-            $this->addUserRestriction($qb, $user);
+            if ($this->getServiceManager()->has('authentication')) {
+                /** @var User $user */
+                $user = array_key_exists('user', $options) && $options['user'] instanceof User ? $options['user'] : $this->getCurrentUser();
+                $this->addUserRestriction($qb, $user);
+            }
+
 
             //========= FILTERS =========
             if (!empty($config)) {

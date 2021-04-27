@@ -262,12 +262,6 @@ msgstr "Required"
 msgid "user"
 msgstr "User"
 
-msgid "product"
-msgstr "Campaign"
-
-msgid "Product"
-msgstr "Campaign"
-
 msgid "company"
 msgstr "Company"
 

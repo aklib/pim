@@ -48,16 +48,16 @@ class UserRole
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=16, nullable=false)
+     * @ORM\Column(name="unique_key", type="string", length=16, nullable=false)
      */
-    private string $name;
+    private string $uniqueKey;
 
     /**
      * @var string|null
      *
-     * @ORM\Column(name="description", type="string", length=64, nullable=true)
+     * @ORM\Column(name="name", type="string", length=64, nullable=true)
      */
-    private string $description;
+    private string $name;
 
     /**
      * @var int
@@ -92,6 +92,22 @@ class UserRole
     /**
      * @return string
      */
+    public function getUniqueKey(): string
+    {
+        return $this->uniqueKey;
+    }
+
+    /**
+     * @param string $uniqueKey
+     */
+    public function setUniqueKey(string $uniqueKey): void
+    {
+        $this->uniqueKey = $uniqueKey;
+    }
+
+    /**
+     * @return string
+     */
     public function getName(): string
     {
         return $this->name;
@@ -103,22 +119,6 @@ class UserRole
     public function setName(string $name): void
     {
         $this->name = $name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    /**
-     * @param string $description
-     */
-    public function setDescription(string $description): void
-    {
-        $this->description = $description;
     }
 
     /**

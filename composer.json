@@ -51,7 +51,8 @@
     "ext-json": "*",
     "doctrine/annotations": "^1.10",
     "ruflin/elastica": "^7.0",
-    "ext-pdo": "*"
+    "ext-pdo": "*",
+    "gedmo/doctrine-extensions": "^3.0"
   },
   "autoload": {
     "psr-4": {

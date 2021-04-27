@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection UnusedFunctionResultInspection */
 
 /**
  * Class AbstractEntityForm
@@ -203,6 +203,9 @@ abstract class AbstractEntityForm extends AbstractAwareForm
             case 'changeId':
             case 'attributeValues':
                 return false;
+        }
+        if(!$this->getServiceManager()->has('acl')){
+            return true;
         }
 
         /** @var ViewManager $viewManager */

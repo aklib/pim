@@ -20,18 +20,17 @@
      */
     class CategoryDecorator extends AbstractPrettyBootstrapElement
     {
-        public function getTab(): string
+        public function getRoot(): string
         {
-            return $this->getObject()->getTab()->getLabel();
+            return $this->getObject()->getName();
         }
 
-        public function getType(): string
+        public function getParent(): string
         {
-            return $this->getObject()->getType()->getDescription();
-        }
-
-        public function getContext(): string
-        {
-            return $this->getObject()->getContext()->getContext();
+            $parent = $this->getObject()->getParent();
+            if($parent === null){
+                return 'root';
+            }
+            return $parent->getName();
         }
     }

@@ -4,13 +4,10 @@ namespace Category;
 
 use Application\ServiceManager\InvokableAwareFactory;
 use Category\Adapter\CategoryAdapter;
-use Category\Adapter\TabAdapter;
 use Category\Decorator\CategoryDecorator;
-use Category\Decorator\TabDecorator;
+use Category\Form\CategoryCreate;
 use Category\Form\CategoryEdit;
-use Category\Form\ReorderForm;
-use Category\Hydrator\AttributeEntityHydrator;
-use Category\Hydrator\CustomEntityHydratorFactory;
+use Gedmo\Tree\TreeListener;
 
 return [
     'navigation'      => [
@@ -38,17 +35,18 @@ return [
     ],
     'service_manager' => [
         'factories' => [
-            ModuleOptions::class           => InvokableAwareFactory::class,
+            ModuleOptions::class     => InvokableAwareFactory::class,
             // adapters
-            CategoryAdapter::class         => InvokableAwareFactory::class,
+            CategoryAdapter::class   => InvokableAwareFactory::class,
 
             //  forms
-            CategoryEdit::class            => InvokableAwareFactory::class,
+            CategoryCreate::class    => InvokableAwareFactory::class,
+            CategoryEdit::class    => InvokableAwareFactory::class,
             // decorators
-            CategoryDecorator::class       => InvokableAwareFactory::class,
+            CategoryDecorator::class => InvokableAwareFactory::class,
         ],
         'aliases'   => [
-            Entity\Category::class . 'Decorator'    => CategoryDecorator::class,
+            Entity\Category::class . 'Decorator' => CategoryDecorator::class,
         ],
     ],
     'view_manager'    => [
@@ -62,7 +60,14 @@ return [
             ],
     ],
     'doctrine'        => [
-        'driver' => [
+        'eventmanager' => [
+            'orm_default' => [
+                'subscribers' => [
+                    TreeListener::class,
+                ],
+            ],
+        ],
+        'driver'       => [
             'application_entities' => [
                 'paths' => [__DIR__ . '/../src/Entity']
             ],

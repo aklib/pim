@@ -82,11 +82,11 @@ class AclService extends AbstractAwareContainer implements AclViewInterface
     {
         $roleString = '';
         if ($role === null) {
-            $roleString = $this->getCurrentUser()->getUserRole()->getName();
+            $roleString = $this->getCurrentUser()->getUserRole()->getUniqueKey();
         } elseif ($role instanceof User) {
-            $roleString = $role->getUserRole()->getName();
+            $roleString = $role->getUserRole()->getUniqueKey();
         } elseif ($role instanceof UserRole) {
-            $roleString = $role->getName();
+            $roleString = $role->getUniqueKey();
         } elseif (is_string($role)) {
             $roleString = $role;
         }
@@ -281,7 +281,7 @@ class AclService extends AbstractAwareContainer implements AclViewInterface
         if ($user === null) {
             $user = $this->getCurrentUser();
         }
-        return $user->getUserRole()->getName() === UserRole::USER_ROLE_DEVELOPER;
+        return $user->getUserRole()->getUniqueKey() === UserRole::USER_ROLE_DEVELOPER;
     }
 
     public function isAdvertiser(User $user = null): bool
@@ -289,7 +289,7 @@ class AclService extends AbstractAwareContainer implements AclViewInterface
         if ($user === null) {
             $user = $this->getCurrentUser();
         }
-        return $user->getUserRole()->getName() === UserRole::USER_ROLE_ADVERTISER;
+        return $user->getUserRole()->getUniqueKey() === UserRole::USER_ROLE_ADVERTISER;
     }
 
     public function isPublisher(User $user = null): bool
@@ -297,7 +297,7 @@ class AclService extends AbstractAwareContainer implements AclViewInterface
         if ($user === null) {
             $user = $this->getCurrentUser();
         }
-        return $user->getUserRole()->getName() === UserRole::USER_ROLE_PUBLISHER;
+        return $user->getUserRole()->getUniqueKey() === UserRole::USER_ROLE_PUBLISHER;
     }
 
     public function isAdmin(User $user = null): bool
@@ -305,7 +305,7 @@ class AclService extends AbstractAwareContainer implements AclViewInterface
         if ($user === null) {
             $user = $this->getCurrentUser();
         }
-        return $user->getUserRole()->getName() === UserRole::USER_ROLE_ADMIN;
+        return $user->getUserRole()->getUniqueKey() === UserRole::USER_ROLE_ADMIN;
     }
 
     public function isManager(User $user = null): bool
@@ -313,7 +313,7 @@ class AclService extends AbstractAwareContainer implements AclViewInterface
         if ($user === null) {
             $user = $this->getCurrentUser();
         }
-        return $user->getUserRole()->getName() === UserRole::USER_ROLE_MANAGER;
+        return $user->getUserRole()->getUniqueKey() === UserRole::USER_ROLE_MANAGER;
     }
 
     public function isRedactor(User $user = null): bool
@@ -321,7 +321,7 @@ class AclService extends AbstractAwareContainer implements AclViewInterface
         if ($user === null) {
             $user = $this->getCurrentUser();
         }
-        return $user->getUserRole()->getName() === UserRole::USER_ROLE_REDACTOR;
+        return $user->getUserRole()->getUniqueKey() === UserRole::USER_ROLE_REDACTOR;
     }
 
     /**
