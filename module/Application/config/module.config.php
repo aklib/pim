@@ -201,8 +201,8 @@ return [
         'application' => [
             'upload_base_path' => APPLICATION_PATH . '/public/files',
             'public_path'      => APPLICATION_PATH . '/public',
-            'short_name'       => 'Push',
-            'vendor'           => 'Apagmedia'
+            'short_name'       => 'PIM',
+            'vendor'           => 'Alexej Kisselev'
         ],
     ],
     'view_manager'       => [

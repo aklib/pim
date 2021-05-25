@@ -169,14 +169,16 @@ return [
     ],
     'controllers'     => [
         'factories' => [
-            Controller\AuthController::class    => InvokableAwareFactory::class,
-            Controller\UserController::class    => InvokableAwareFactory::class,
-            Controller\ProfileController::class => InvokableAwareFactory::class,
+            Controller\AuthController::class     => InvokableAwareFactory::class,
+            Controller\UserController::class     => InvokableAwareFactory::class,
+            Controller\ProfileController::class  => InvokableAwareFactory::class,
+            Controller\UserRoleController::class => InvokableAwareFactory::class,
         ],
         'aliases'   => [
             'user'    => Controller\UserController::class,
             'auth'    => Controller\AuthController::class,
             'profile' => Controller\ProfileController::class,
+            'role'    => Controller\UserRoleController::class,
         ],
     ],
     'service_manager' => [
@@ -214,8 +216,8 @@ return [
             [
                 'csrf_on'             => true, // csrf security
                 'registration_on'     => false,// show registration link
-                'reset_password_on'   => true,// show password forgot link
-                'dispatch_on'         => true, // redirect to login if not authenticated !!!
+                'reset_password_on'   => false,// show password forgot link
+                'dispatch_on'         => false, // redirect to login if not authenticated !!!
                 'allow_guest'         => true, // no redirect to login
                 'min_password_length' => 6,
                 'password_options'    => [

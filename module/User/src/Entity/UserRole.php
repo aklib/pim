@@ -20,7 +20,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\NamedQueries({
  *   @ORM\NamedQuery(
  *      name = "dropdownChoice",
- *      query = "SELECT e.id, e.description FROM __CLASS__ e WHERE e.priority <= :priority ORDER BY e.name ASC"
+ *      query = "SELECT e.id, e.name FROM __CLASS__ e WHERE e.priority <= :priority ORDER BY e.name ASC"
  *   )
  * })
  * @ORM\Table(name="user_role", uniqueConstraints={@ORM\UniqueConstraint(name="UQ_name", columns={"name"})})

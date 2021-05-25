@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection UnknownInspectionInspection */
 
 namespace User\Controller;
 
@@ -20,40 +20,6 @@ use User\Repository\UserDao;
  */
 class UserController extends AbstractUserController
 {
-    protected function postSaveEntity(?object $entity): void
-    {
-        parent::postSaveEntity($entity);
-        if ($entity instanceof User && $this->getActionName() === 'create' && ($this->acl()->isPublisher($entity) || $this->acl()->isAdvertiser($entity))) {
-            $doCreate = (int)$this->getRequest()->getPost('create_companies');
-            if ($doCreate === 1) {
-                $status = $entity->getStatus();
-                $name = $this->getRequest()->getPost('create_companies_name');
-                if (empty($name)) {
-                    $name = $entity->getFirstName();
-                }
-                $adv = new Advertiser();
-                $adv->setName($name);
-                $adv->setStatus($status);
-                $entity->addAdvertiser($adv);
-                $pub = new Publisher();
-                $pub->setName($name);
-                $pub->setStatus($status);
-                $entity->addPublisher($pub);
-                /** @var UserDao $dao */
-                $dao = $this->getEntityManager()->getRepository(User::class);
-                try {
-                    $dao->doSave($entity);
-                    $this->addMessage(sprintf("Publisher and Advertiser companies with name '%s' have been created", $name),
-                        FlashMessenger::NAMESPACE_SUCCESS);
-                } catch (Exception $e) {
-                    $this->addMessage(sprintf("Creating of Publisher and Advertiser companies with name '%s' have been failed", $entity->getFirstName()),
-                        FlashMessenger::NAMESPACE_ERROR);
-                }
-
-
-            }
-        }
-    }
 
     public function editAction(?object $entity = null, ?Form $form = null, ?array $options = []): ViewModel
     {
@@ -63,7 +29,6 @@ class UserController extends AbstractUserController
     /**
      * @return ViewModel
      * @throws Exception
-     * @noinspection PhpUnused
      */
     public function createAction(): ViewModel
     {

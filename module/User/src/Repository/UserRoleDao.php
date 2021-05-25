@@ -17,7 +17,7 @@ use Doctrine\ORM\Query\AST\Join;
  */
 class UserRoleDao extends AbstractModelDao
 {
-    protected function setNamedQueryParameter(Query $query): void
+    public function setNamedQueryParameter(Query $query): void
     {
         $query->setParameter('priority', $this->getCurrentUser()->getUserRole()->getPriority());
 
